@@ -1,0 +1,33 @@
+\begin{table}[t]
+\centering
+\caption{Numerical agreement with the reference attention over 6 shapes $\times$ causal/non-causal $\times$ 2 block sizes (incl. $T_q<T_k$ KV-cache shapes). Tolerance: $10^{-4}$ (fp32), $2\cdot10^{-2}$ (fp16).}
+\label{tab:attn-err}
+\footnotesize
+\begin{tabular}{llrrrr}
+\toprule
+Variant & dtype & Cases & Max err & Mean err & Pass \\
+\midrule
+tiled & float32 & 24 & 8.34e-07 & 2.72e-08 & 24/24 \\
+fused SDPA & float32 & 12 & 7.15e-07 & 3.49e-08 & 12/12 \\
+tiled & float16 & 24 & 4.88e-04 & 4.51e-08 & 24/24 \\
+fused SDPA & float16 & 12 & 1.95e-03 & 2.75e-05 & 12/12 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Attention runtime and peak extra memory (12 heads, d=64, causal, fp16, cuda).}
+\label{tab:attn-perf}
+\footnotesize
+\begin{tabular}{lrrrrrr}
+\toprule
+T & Ref ms & Tiled ms & SDPA ms & Ref MB & Tiled MB & SDPA MB \\
+\midrule
+128 & 0.58 & 1.14 & 0.06 & 2.3 & 3.6 & 0.2 \\
+512 & 1.23 & 9.20 & 0.14 & 36.3 & 4.5 & 0.8 \\
+1024 & 4.23 & 30.84 & 0.33 & 145.0 & 5.3 & 1.5 \\
+2048 & 15.67 & 126.74 & 0.58 & 580.1 & 6.8 & 3.0 \\
+\bottomrule
+\end{tabular}
+\end{table}

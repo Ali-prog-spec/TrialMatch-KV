@@ -1,0 +1,30 @@
+C:\Users\KENKINIKI\Desktop\New folder (2)\app\server.py:38: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+INFO:     Started server process [11224]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  10%|#         | 35/338 [00:00<00:01, 302.35it/s]Loading weights:  28%|##7       | 93/338 [00:00<00:00, 433.36it/s]Loading weights:  43%|####3     | 147/338 [00:00<00:00, 468.11it/s]Loading weights:  58%|#####8    | 197/338 [00:00<00:00, 455.31it/s]Loading weights:  77%|#######6  | 260/338 [00:00<00:00, 512.85it/s]Loading weights:  92%|#########2| 312/338 [00:00<00:00, 510.63it/s]Loading weights: 100%|##########| 338/338 [00:00<00:00, 490.90it/s]
+W1102 19:04:00.640000 11224 torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:  16%|#5        | 45/290 [00:00<00:00, 282.72it/s]Loading weights: 100%|##########| 290/290 [00:00<00:00, 1322.34it/s]
+INFO:     127.0.0.1:64859 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64861 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:64863 - "POST /api/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64865 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:60875 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60875 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60875 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59404 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59404 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59404 - "POST /api/screen HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59073 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59073 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59073 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:59073 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59073 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59073 - "POST /api/benchmark HTTP/1.1" 200 OK

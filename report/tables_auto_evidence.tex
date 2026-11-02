@@ -1,0 +1,24 @@
+\begin{table}[t]
+\centering
+\caption{Evidence-sentence retrieval. Micro: pooled counts. Macro-all: per-record mean with both-empty counted as 1.0; Macro-NE: only records with at least one gold sentence. $n_{NE}$ = number of such records.}
+\label{tab:evidence}
+\footnotesize
+\begin{tabular}{lllrrrrrr}
+\toprule
+Split & Model & Group & P$_\mu$ & R$_\mu$ & F1$_\mu$ & F1$_{M}$ & F1$_{NE}$ & $n_{NE}$ \\
+\midrule
+val & Base & overall & 0.080 & 0.896 & 0.146 & 0.138 & 0.315 & 90 \\
+val & Base & inclusion & 0.157 & 0.940 & 0.269 & 0.255 & 0.336 & 50 \\
+val & Base & exclusion & 0.045 & 0.833 & 0.085 & 0.082 & 0.289 & 40 \\
+val & Fine-tuned & overall & 0.453 & 0.591 & 0.513 & 0.738 & 0.578 & 90 \\
+val & Fine-tuned & inclusion & 0.422 & 0.687 & 0.523 & 0.647 & 0.654 & 50 \\
+val & Fine-tuned & exclusion & 0.537 & 0.458 & 0.494 & 0.781 & 0.483 & 40 \\
+test & Base & overall & 0.079 & 0.894 & 0.144 & 0.109 & 0.369 & 61 \\
+test & Base & inclusion & 0.146 & 0.952 & 0.254 & 0.222 & 0.370 & 45 \\
+test & Base & exclusion & 0.038 & 0.781 & 0.072 & 0.045 & 0.367 & 16 \\
+test & Fine-tuned & overall & 0.471 & 0.521 & 0.495 & 0.793 & 0.546 & 61 \\
+test & Fine-tuned & inclusion & 0.500 & 0.742 & 0.597 & 0.664 & 0.684 & 45 \\
+test & Fine-tuned & exclusion & 0.250 & 0.094 & 0.136 & 0.866 & 0.156 & 16 \\
+\bottomrule
+\end{tabular}
+\end{table}

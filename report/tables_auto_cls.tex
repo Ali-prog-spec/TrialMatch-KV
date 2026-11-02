@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Criterion classification before/after fine-tuning (identical examples, greedy decoding, fp16, max 64 new tokens). Macro-F1 is over all label classes of the group (classes with zero support count as 0).}
+\label{tab:cls}
+\footnotesize
+\begin{tabular}{llrrrrrr}
+\toprule
+Split & Model & Acc & mF1 & Inc Acc & Inc mF1 & Exc Acc & Exc mF1 \\
+\midrule
+val & Base (zero-shot) & 0.141 & 0.130 & 0.409 & 0.216 & 0.014 & 0.007 \\
+val & Fine-tuned & 0.723 & 0.349 & 0.727 & 0.372 & 0.721 & 0.210 \\
+test & Base (zero-shot) & 0.223 & 0.211 & 0.613 & 0.393 & 0.000 & 0.000 \\
+test & Fine-tuned & 0.723 & 0.379 & 0.773 & 0.415 & 0.695 & 0.205 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -102,5 +102,10 @@ t = L("train_log.json")
 rows = [[e["epoch"], f"{e['train_loss']:.4f}", f"{e['val_loss']:.4f}", f"{e['elapsed_s'] / 60:.0f}"] for e in t["epochs"]]
 out.append(tab(f"LoRA training log (best epoch = {t['best_epoch']}, saved by validation loss).", "tab:train", ["Epoch", "Train loss", "Val loss", "Elapsed min"], rows))
 
-(R / "report" / "tables_auto.tex").write_text("\n".join(out), encoding="utf-8")
-print("ok", len(out))
+names = ["cls", "perclass", "evidence", "kv", "spec", "spec", "attn", "attn", "train"]
+groups = {}
+for n, t in zip(names, out):
+    groups.setdefault(n, []).append(t)
+for n, ts in groups.items():
+    (R / "report" / f"tables_auto_{n}.tex").write_text("\n".join(ts), encoding="utf-8")
+print("ok", list(groups))

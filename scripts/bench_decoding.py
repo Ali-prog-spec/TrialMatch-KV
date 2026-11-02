@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser()
 ap.add_argument("--adapter", default=None)
 ap.add_argument("--reps", type=int, default=3)
 ap.add_argument("--k", type=int, nargs="+", default=[2, 4, 6])
+ap.add_argument("--skip_cache", action="store_true", help="reuse cache_tests from existing --out file")
 ap.add_argument("--out", default="results/decoding_benchmark.json")
 a = ap.parse_args()
 
@@ -54,7 +55,7 @@ def timed(fn, reps):
 
 def hf_assisted(ids, n):
     torch.cuda.synchronize(); torch.cuda.reset_peak_memory_stats(); t0 = time.perf_counter()
-    out = target.generate(ids, assistant_model=draft, max_new_tokens=n, min_new_tokens=n, do_sample=False, repetition_penalty=1.0, temperature=None, top_p=None, top_k=None, attention_mask=torch.ones_like(ids), pad_token_id=tok.eos_token_id,
+    out = target.generate(ids, assistant_model=draft, max_new_tokens=n, eos_token_id=[10**9], do_sample=False, repetition_penalty=1.0, temperature=None, top_p=None, top_k=None, attention_mask=torch.ones_like(ids), pad_token_id=tok.eos_token_id,
                           num_assistant_tokens=4, num_assistant_tokens_schedule="constant")
     torch.cuda.synchronize(); t = time.perf_counter() - t0
     return dict(tokens=out[0, ids.shape[1]:].tolist(), prefill_s=0.0, decode_s=t, total_s=t,
@@ -68,7 +69,9 @@ results["params_M"] = dict(target=sum(p.numel() for p in target.parameters()) / 
 results["weights_MB"] = dict(target=torch.cuda.memory_allocated() / 2**20)
 
 # ---------------- Task 3: KV cache vs no cache ----------------
-for n_in in (128, 384, 768):
+if a.skip_cache:
+    results["cache_tests"] = json.loads(Path(ROOT / a.out).read_text())["cache_tests"]
+for n_in in (() if a.skip_cache else (128, 384, 768)):
     for n_out in (16, 64, 128):
         ids = prompt_with_len(n_in).to(dev)
         ref = timed(lambda: greedy_nocache(target, ids, n_out), a.reps)

@@ -1,5 +1,6 @@
 """Builds report figures + error-analysis table from results/*.json(l). Output: report/figures/, results/error_analysis.md"""
 import json, sys
+sys.stdout.reconfigure(encoding="utf-8")
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -68,7 +69,7 @@ err["kind"] = np.where(err.pred_label.isin(["included", "not excluded"]) & (err.
               np.where(err.gold_label == "not applicable", "missed not-applicable",
               np.where(err.pred_label == "not enough information", "over-abstention (info present)", "contradiction / wrong polarity")))
 lines = ["# Error analysis (held-out test, fine-tuned model)\n", f"{len(err)} of {len(p)} criterion predictions wrong.\n", err.kind.value_counts().to_markdown() + "\n"]
-picked = err.groupby("kind", group_keys=False).apply(lambda g: g.sample(min(len(g), 3), random_state=0))
+picked = pd.concat([g.sample(min(len(g), 3), random_state=0) for _, g in err.groupby("kind")])
 for _, r in picked.iterrows():
     lines.append(f"- **[{r.kind}]** ann {r.annotation_id} ({r.criterion_type}) criterion: \"{r.criterion_text[:140]}\" -> gold *{r.gold_label}* {r.gold_ids}, predicted *{r.pred_label}* {r.pred_ids}")
 (res / "error_analysis.md").write_text("\n".join(lines), encoding="utf-8")

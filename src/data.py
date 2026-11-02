@@ -32,7 +32,9 @@ def load_raw() -> pd.DataFrame:
     if not RAW.exists():
         from datasets import load_dataset
         load_dataset(DATASET_ID)["train"].to_pandas().to_json(RAW, orient="records", lines=True)
-    df = pd.read_json(RAW, lines=True, dtype={"patient_id": str})
+    df = pd.read_json(RAW, lines=True, dtype={"patient_id": str, "criterion_text": str, "note": str, "expert_sentences": str, "expert_eligibility": str})
+    for c in ("criterion_text", "note", "expert_sentences", "expert_eligibility"):
+        df[c] = df[c].fillna("").astype(str)
     return df
 
 

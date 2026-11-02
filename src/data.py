@@ -1,4 +1,4 @@
-"""Data loading, patient-grouped split (seed 42, 37/8/8), prompt/target formatting.
+﻿"""Data loading, patient-grouped split (seed 42, 37/8/8), prompt/target formatting.
 
 GPT-4 columns (gpt4_*), explanation_correctness and the original `training` flag are
 NEVER used as model input or in evaluation.
@@ -83,7 +83,7 @@ def parse_ids(x):
 
 def build_user_prompt(note: str, ctype: str, ctext: str) -> str:
     return (f"Patient note (numbered sentences):\n{note.strip()}\n\n"
-            f"Criterion type: {ctype}\nCriterion: {ctext.strip()}\n\n"
+            f"Criterion type: {ctype}\nCriterion: {ctext.strip() or '[criterion text missing in dataset]'}\n\n"
             f"Allowed labels: {', '.join(LABELS[ctype])}.\n"
             'Answer as JSON: {"label": ..., "evidence": [sentence ids]}')
 

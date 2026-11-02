@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TrialMatch-KV</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--ink:#1c2430;--mut:#667085;--acc:#2455d6;--ok:#157f3b;--bad:#b42318;--warn:#b54708;--line:#e3e7ef}
+*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,Segoe UI,Arial;background:var(--bg);color:var(--ink)}
+header{background:#12203f;color:#fff;padding:14px 24px}header h1{margin:0;font-size:20px}header small{opacity:.8}
+.banner{background:#fff3cd;color:#664d03;border-bottom:1px solid #e0a800;padding:8px 24px;font-weight:600}
+main{max-width:1200px;margin:18px auto;padding:0 16px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600}
+.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+textarea{width:100%;min-height:210px;border:1px solid var(--line);border-radius:8px;padding:8px;font:13px/1.4 Consolas,monospace}
+select,input[type=number]{padding:6px;border:1px solid var(--line);border-radius:6px}
+button.primary{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer}
+button.primary:disabled{opacity:.5}button.sec{background:#fff;border:1px solid var(--acc);color:var(--acc);border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}th{background:#eef1f8}
+.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:700;font-size:13px;background:#eef1f8}
+.included,.not_excluded{background:#d1fadf;color:var(--ok)}.excluded,.not_included{background:#fee4e2;color:var(--bad)}.not_enough_information{background:#fef0c7;color:var(--warn)}.not_applicable{background:#e5e7eb;color:#444}
+.ev{background:#f0f5ff;border-left:3px solid var(--acc);padding:4px 8px;margin:3px 0;font-size:13px}
+.err{background:#fee4e2;border:1px solid var(--bad);color:var(--bad);padding:10px;border-radius:8px;margin:8px 0}
+.muted{color:var(--mut);font-size:13px}.hide{display:none}.big{font-size:20px;font-weight:800}
+.bar{height:14px;background:var(--acc);border-radius:3px}
+</style></head><body>
+<header><h1>TrialMatch-KV <small>— evidence-grounded clinical-trial criterion screening with KV-cache, tiled attention &amp; speculative decoding</small></h1></header>
+<div class="banner">⚠ Educational screening prototype — NOT a clinical enrollment decision. Outputs may be wrong and must be reviewed by a clinician.</div>
+<main>
+<div class="card muted" id="status">Checking model status…</div>
+<div class="tabs"><button class="on" data-t="screen">Screening</button><button data-t="bench">Inference comparison</button><button data-t="attn">Attention lab</button><button data-t="res">Saved experiments</button></div>
+
+<section id="t-screen">
+ <div class="card"><b>Load a sample (validation-split patients):</b> <select id="sample"></select> <button class="sec" id="loadS">Load</button>
+  <button class="sec" id="clearB">Clear</button></div>
+ <div class="grid">
+  <div class="card"><b>1. Patient record</b><div class="muted">Paste a clinical note. Numbered lines ("0. ...") are kept; otherwise it is split into sentences and numbered from 0.</div><textarea id="note" placeholder="Paste patient description here"></textarea></div>
+  <div class="card"><b>2. Trial eligibility criteria</b><div class="muted">One criterion per line under "Inclusion criteria:" / "Exclusion criteria:" headers.</div><textarea id="crit" placeholder="Inclusion criteria:&#10;- ...&#10;Exclusion criteria:&#10;- ..."></textarea></div>
+ </div>
+ <div class="card">Decoding mode: <select id="mode"><option value="kv">KV cache (custom)</option><option value="speculative">Speculative decoding (custom)</option><option value="nocache">No cache (reference)</option></select>
+  &nbsp;draft tokens k: <input type="number" id="k" value="4" min="1" max="8" style="width:60px"> &nbsp;<button class="primary" id="run">Run screening</button>
+  <span id="spin" class="muted hide"> running…</span><div id="err"></div></div>
+ <div id="out" class="hide">
+  <div class="card"><div class="big" id="overall"></div><div class="muted" id="rule"></div><div class="muted" id="prov"></div>
+   <p><button class="sec" id="dlH">Download report (HTML)</button> <button class="sec" id="dlJ">Download JSON</button></p></div>
+  <div class="card"><table id="rtab"><thead><tr><th>#</th><th>Type</th><th>Criterion</th><th>Decision</th><th>Exact supporting evidence</th><th>Explanation</th><th>ms</th></tr></thead><tbody></tbody></table></div>
+ </div>
+</section>
+
+<section id="t-bench" class="hide">
+ <div class="card">Runs the three hand-written decoders on the first criterion of the current Screening inputs (warm-up + timed). Greedy outputs must be identical.<br><br>
+ k: <input type="number" id="bk" value="4" min="1" max="8" style="width:60px"> <button class="primary" id="runB">Run live comparison</button><span id="spinB" class="muted hide"> running…</span><div id="errB"></div></div>
+ <div class="card hide" id="bout"><div id="bmeta" class="muted"></div><table id="btab"><thead><tr><th>Method</th><th>Prefill ms</th><th>Decode ms</th><th>Total ms</th><th>tok/s</th><th>Peak MB</th><th>Accept. rate</th><th>Tokens = reference</th></tr></thead><tbody></tbody></table><div id="bars"></div></div>
+</section>
+
+<section id="t-attn" class="hide">
+ <div class="card">Compare reference attention, tiled online-softmax attention and PyTorch's fused SDPA on random tensors (8 heads, d=64).<br><br>
+ T: <input type="number" id="aT" value="512" style="width:80px"> block: <input type="number" id="aB" value="64" style="width:70px"> causal <input type="checkbox" id="aC" checked>
+ <button class="primary" id="runA">Run</button><div id="errA"></div><table id="atab" class="hide"><thead><tr><th>Implementation</th><th>Time ms</th><th>Max |error| vs reference</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="t-res" class="hide"><div class="card" id="resbox">Loading…</div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s);let last=null;
+const cls=l=>l.replace(/ /g,'_');
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});
+ let j;try{j=await r.json()}catch{j={}};if(!r.ok)throw new Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||'Request failed'));return j}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ ['screen','bench','attn','res'].forEach(t=>$('#t-'+t).classList.toggle('hide',t!==b.dataset.t));if(b.dataset.t==='res')loadRes()});
+let samples=[];
+async function init(){
+ try{const s=await api('/api/status');$('#status').innerHTML=s.error?`<span style="color:#b42318">Model error: ${esc(s.error)}</span>`:
+  (s.ready?`✅ Ready — target <b>${esc(s.target)}</b> + LoRA adapter <b>${esc(s.adapter||'none (base model)')}</b>, draft <b>${esc(s.draft)}</b>, device ${esc(s.gpu)}`:'⏳ Loading models… (refresh in a moment)');
+  if(!s.ready&&!s.error)setTimeout(init,3000)}catch(e){$('#status').textContent='Server unreachable'}
+ try{samples=await api('/api/samples');$('#sample').innerHTML=samples.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join('')}catch(e){}}
+$('#loadS').onclick=()=>{const s=samples[$('#sample').value];if(s){$('#note').value=s.note;$('#crit').value=s.criteria}};
+$('#clearB').onclick=()=>{$('#note').value='';$('#crit').value='';$('#out').classList.add('hide');$('#err').innerHTML=''};
+const payload=()=>({note:$('#note').value,criteria:$('#crit').value,mode:$('#mode').value,k:+$('#k').value});
+$('#run').onclick=async()=>{$('#err').innerHTML='';$('#run').disabled=true;$('#spin').classList.remove('hide');
+ try{const d=await api('/api/screen',payload());last=d;render(d)}catch(e){$('#err').innerHTML=`<div class="err">${esc(e.message)}</div>`}
+ $('#run').disabled=false;$('#spin').classList.add('hide')};
+function render(d){$('#out').classList.remove('hide');$('#overall').textContent='Preliminary outcome: '+d.overall;$('#rule').textContent=d.overall_rule+' (rule-based aggregation of criterion-level predictions)';
+ $('#prov').textContent=`Model ${d.model} | adapter ${d.adapter} | mode ${d.mode}${d.draft?' (draft '+d.draft+', k='+d.k+')':''} | ${d.generated} | ${d.wall_s.toFixed(1)} s`;
+ $('#rtab tbody').innerHTML=d.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.criterion_type}</td><td>${esc(r.criterion)}</td>
+  <td><span class="pill ${cls(r.label)}">${esc(r.label)}</span>${r.missing_information?'<div class="muted">⚠ missing information</div>':''}${r.format_valid?'':'<div class="muted">⚠ malformed output → fallback</div>'}</td>
+  <td>${r.evidence.length?r.evidence.map(e=>`<div class="ev"><b>[${e.id}]</b> ${esc(e.text)}</div>`).join(''):'<i class="muted">no sentence cited</i>'}</td>
+  <td>${esc(r.explanation)}</td><td>${(1000*r.timing.total_s).toFixed(0)}</td></tr>`).join('')}
+function dl(name,type,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()}
+$('#dlH').onclick=async()=>{if(!last)return;const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(last)});dl('eligibility_report.html','text/html',await r.text())};
+$('#dlJ').onclick=()=>last&&dl('eligibility_report.json','application/json',JSON.stringify(last,null,2));
+$('#runB').onclick=async()=>{$('#errB').innerHTML='';$('#spinB').classList.remove('hide');$('#runB').disabled=true;
+ try{const d=await api('/api/benchmark',{...payload(),k:+$('#bk').value});$('#bout').classList.remove('hide');
+  $('#bmeta').textContent=`Prompt tokens: ${d.prompt_tokens} | criterion: ${d.criterion} | output: ${d.output}`;
+  const mx=Math.max(...d.rows.map(r=>r.tok_per_s));
+  $('#btab tbody').innerHTML=d.rows.map(r=>`<tr><td>${esc(r.method)}</td><td>${r.prefill_ms.toFixed(0)}</td><td>${r.decode_ms.toFixed(0)}</td><td>${r.total_ms.toFixed(0)}</td><td>${r.tok_per_s.toFixed(1)}</td><td>${r.peak_MB.toFixed(0)}</td><td>${r.acceptance_rate==null?'–':r.acceptance_rate.toFixed(2)}</td><td>${r.tokens_equal_to_reference?'✅ yes':'❌ no'}</td></tr>`).join('');
+  $('#bars').innerHTML='<p class="muted">Throughput (tokens/s)</p>'+d.rows.map(r=>`<div>${esc(r.method)}<div class="bar" style="width:${100*r.tok_per_s/mx}%"></div></div>`).join('')}
+ catch(e){$('#errB').innerHTML=`<div class="err">${esc(e.message)}</div>`}$('#spinB').classList.add('hide');$('#runB').disabled=false};
+$('#runA').onclick=async()=>{$('#errA').innerHTML='';try{const d=await api('/api/attention',{T:+$('#aT').value,block:+$('#aB').value,causal:$('#aC').checked});
+ $('#atab').classList.remove('hide');$('#atab tbody').innerHTML=Object.entries(d).map(([k,v])=>`<tr><td>${k}</td><td>${v.ms.toFixed(2)}</td><td>${v.max_abs_err_vs_reference.toExponential(2)}</td></tr>`).join('')}
+ catch(e){$('#errA').innerHTML=`<div class="err">${esc(e.message)}</div>`}};
+async function loadRes(){try{const d=await api('/api/results');let h='';
+ const t=d['metrics_test_finetuned.json'],b=d['metrics_test_base.json'];
+ if(t){h+='<h3>Held-out test (fine-tuned vs base)</h3><table><tr><th>Model</th><th>Accuracy</th><th>Macro-F1</th><th>Evidence micro-F1</th></tr>'+
+  [['Base (zero-shot)',b],['Fine-tuned',t]].filter(x=>x[1]).map(([n,m])=>`<tr><td>${n}</td><td>${m.overall.accuracy.toFixed(3)}</td><td>${m.overall.macro_f1.toFixed(3)}</td><td>${m.overall.evidence.micro.f1.toFixed(3)}</td></tr>`).join('')+'</table>'}
+ const bm=d['decoding_benchmark.json'];if(bm){h+='<h3>KV-cache benchmark (offline run)</h3><table><tr><th>in</th><th>out</th><th>match</th><th>no-cache s</th><th>KV s</th><th>speedup</th></tr>'+bm.cache_tests.map(r=>`<tr><td>${r.input_len}</td><td>${r.output_len}</td><td>${r.tokens_match?'✅':'❌'}</td><td>${r.nocache.total_s.toFixed(2)}</td><td>${r.kv.total_s.toFixed(2)}</td><td>${r.speedup_total.toFixed(1)}x</td></tr>`).join('')+'</table>'}
+ $('#resbox').innerHTML=h||'No saved experiment files found in results/.'}catch(e){$('#resbox').textContent=e.message}}
+init();
+</script></body></html>

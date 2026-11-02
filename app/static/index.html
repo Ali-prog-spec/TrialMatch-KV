@@ -69,7 +69,7 @@ async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'C
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
  ['screen','bench','attn','res'].forEach(t=>$('#t-'+t).classList.toggle('hide',t!==b.dataset.t));if(b.dataset.t==='res')loadRes()});
 let samples=[];
-async function init(){
+async function init(){await (async()=>{try{samples=await api('/api/samples');$('#sample').innerHTML=samples.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join('')}catch(e){}})();
  try{const s=await api('/api/status');$('#status').innerHTML=s.error?`<span style="color:#b42318">Model error: ${esc(s.error)}</span>`:
   (s.ready?`✅ Ready — target <b>${esc(s.target)}</b> + LoRA adapter <b>${esc(s.adapter||'none (base model)')}</b>, draft <b>${esc(s.draft)}</b>, device ${esc(s.gpu)}`:'⏳ Loading models… (refresh in a moment)');
   if(!s.ready&&!s.error)setTimeout(init,3000)}catch(e){$('#status').textContent='Server unreachable'}
@@ -105,5 +105,5 @@ async function loadRes(){try{const d=await api('/api/results');let h='';
   [['Base (zero-shot)',b],['Fine-tuned',t]].filter(x=>x[1]).map(([n,m])=>`<tr><td>${n}</td><td>${m.overall.accuracy.toFixed(3)}</td><td>${m.overall.macro_f1.toFixed(3)}</td><td>${m.overall.evidence.micro.f1.toFixed(3)}</td></tr>`).join('')+'</table>'}
  const bm=d['decoding_benchmark.json'];if(bm){h+='<h3>KV-cache benchmark (offline run)</h3><table><tr><th>in</th><th>out</th><th>match</th><th>no-cache s</th><th>KV s</th><th>speedup</th></tr>'+bm.cache_tests.map(r=>`<tr><td>${r.input_len}</td><td>${r.output_len}</td><td>${r.tokens_match?'✅':'❌'}</td><td>${r.nocache.total_s.toFixed(2)}</td><td>${r.kv.total_s.toFixed(2)}</td><td>${r.speedup_total.toFixed(1)}x</td></tr>`).join('')+'</table>'}
  $('#resbox').innerHTML=h||'No saved experiment files found in results/.'}catch(e){$('#resbox').textContent=e.message}}
-init();
+init().then(()=>{if(location.hash==='#demo'){setTimeout(()=>{$('#loadS').click();$('#run').click()},500)}if(location.hash==='#bench'){setTimeout(()=>{$('#loadS').click();document.querySelector('[data-t=bench]').click();$('#runB').click()},500)}});
 </script></body></html>

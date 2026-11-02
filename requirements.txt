@@ -1,0 +1,12 @@
+torch==2.11.0   # install the CUDA build: pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+transformers==5.6.2
+peft==0.21.2
+datasets==5.1.0
+accelerate==1.13.0
+scikit-learn
+pandas
+numpy
+matplotlib
+fastapi
+uvicorn
+pydantic

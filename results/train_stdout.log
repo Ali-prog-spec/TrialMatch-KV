@@ -1,0 +1,54 @@
+W1102 15:18:26.209000 14836 torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+token stats {'max_len': 1024, 'max_tokens_seen': 596, 'mean_tokens': 304.5377008652658, 'n_truncated': 0}
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  19%|#8        | 63/338 [00:00<00:00, 567.31it/s]Loading weights:  40%|###9      | 135/338 [00:00<00:00, 641.95it/s]Loading weights:  59%|#####9    | 200/338 [00:00<00:00, 640.11it/s]Loading weights:  80%|#######9  | 269/338 [00:00<00:00, 654.57it/s]Loading weights: 100%|##########| 338/338 [00:00<00:00, 670.49it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+trainable params: 18,464,768 || all params: 1,562,179,072 || trainable%: 1.1820
+ep0 step5 loss 0.3502
+ep0 step10 loss 0.2819
+ep0 step15 loss 0.0948
+ep0 step20 loss 0.2101
+ep0 step25 loss 0.1106
+ep0 step30 loss 0.0965
+ep0 step35 loss 0.0692
+ep0 step40 loss 0.1333
+ep0 step45 loss 0.2299
+ep0 step50 loss 0.0636
+ep0 step55 loss 0.0938
+ep0 step60 loss 0.0585
+ep0 step65 loss 0.1164
+ep0 step70 loss 0.1535
+ep0 step75 loss 0.0951
+{'epoch': 1, 'train_loss': 0.16163918684068937, 'val_loss': 0.12044935324935703, 'elapsed_s': 1222.7103109359741, 'peak_mem_MB': 4336.328125}
+ep1 step80 loss 0.0459
+ep1 step85 loss 0.0601
+ep1 step90 loss 0.1122
+ep1 step95 loss 0.0868
+ep1 step100 loss 0.0851
+ep1 step105 loss 0.0501
+ep1 step110 loss 0.0336
+ep1 step115 loss 0.0689
+ep1 step120 loss 0.0547
+ep1 step125 loss 0.0739
+ep1 step130 loss 0.0227
+ep1 step135 loss 0.0509
+ep1 step140 loss 0.0886
+ep1 step145 loss 0.0773
+ep1 step150 loss 0.0289
+{'epoch': 2, 'train_loss': 0.07508731160456142, 'val_loss': 0.12144397620113964, 'elapsed_s': 2461.3659250736237, 'peak_mem_MB': 4336.328125}
+ep2 step155 loss 0.0479
+ep2 step160 loss 0.0456
+ep2 step165 loss 0.0621
+ep2 step170 loss 0.0567
+ep2 step175 loss 0.0536
+ep2 step180 loss 0.0779
+ep2 step185 loss 0.0210
+ep2 step190 loss 0.0342
+ep2 step195 loss 0.0305
+ep2 step200 loss 0.0618
+ep2 step205 loss 0.0381
+ep2 step210 loss 0.0788
+ep2 step215 loss 0.0645
+ep2 step220 loss 0.0525
+ep2 step225 loss 0.0356
+{'epoch': 3, 'train_loss': 0.04502065868228794, 'val_loss': 0.12518714107270693, 'elapsed_s': 3719.396887779236, 'peak_mem_MB': 4336.328125}
+done, best val loss 0.12044935324935703

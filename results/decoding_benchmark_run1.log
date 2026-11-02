@@ -1,0 +1,35 @@
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  12%|#1        | 39/338 [00:00<00:00, 363.17it/s]Loading weights:  26%|##5       | 87/338 [00:00<00:00, 424.03it/s]Loading weights:  40%|###9      | 135/338 [00:00<00:00, 440.74it/s]Loading weights:  55%|#####5    | 187/338 [00:00<00:00, 471.09it/s]Loading weights:  70%|######9   | 235/338 [00:00<00:00, 447.74it/s]Loading weights:  86%|########5 | 290/338 [00:00<00:00, 480.76it/s]Loading weights: 100%|##########| 338/338 [00:00<00:00, 456.75it/s]
+W1102 17:01:17.142000 31276 torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:   0%|          | 1/290 [00:00<01:19,  3.66it/s]Loading weights:  71%|#######1  | 207/290 [00:00<00:00, 698.92it/s]Loading weights: 100%|##########| 290/290 [00:00<00:00, 609.90it/s]
+target params(M): 1543.714304  draft: 494.032768
+[cache] in=316 out=16 match=True nocache=5.54s kv=2.37s (2.3x) peakMB 4101/4016
+[cache] in=316 out=64 match=True nocache=20.00s kv=3.99s (5.0x) peakMB 4130/4016
+[cache] in=316 out=128 match=True nocache=41.14s kv=8.44s (4.9x) peakMB 4166/4016
+[cache] in=488 out=16 match=True nocache=6.79s kv=1.11s (6.1x) peakMB 4202/4074
+[cache] in=488 out=64 match=True nocache=26.47s kv=4.49s (5.9x) peakMB 4230/4074
+[cache] in=488 out=128 match=True nocache=63.60s kv=15.42s (4.1x) peakMB 4266/4074
+[cache] in=768 out=16 match=True nocache=13.40s kv=2.23s (6.0x) peakMB 4364/4167
+[cache] in=768 out=64 match=True nocache=39.46s kv=4.69s (8.4x) peakMB 4393/4167
+[cache] in=768 out=128 match=True nocache=501.92s kv=13.87s (36.2x) peakMB 4432/4167
+[spec] in=316 out=32 k=2 equal=True acc=0.64 base=2.10s spec=2.49s (0.85x)
+[spec] in=316 out=32 k=4 equal=True acc=0.45 base=2.10s spec=3.50s (0.60x)
+[spec] in=316 out=32 k=6 equal=True acc=0.41 base=2.10s spec=4.03s (0.52x)
+[transformers] The following generation flags are not valid and may be ignored: ['temperature', 'top_p', 'top_k']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+[transformers] The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+[transformers] Passing `generation_config` together with generation-related arguments=({'min_new_tokens', 'max_new_tokens', 'use_cache'}) is deprecated and will be removed in future versions. Please pass either a `generation_config` object OR all generation parameters explicitly, but not both.
+[transformers] A custom logits processor of type <class 'transformers.generation.logits_process.RepetitionPenaltyLogitsProcessor'> has been passed to `.generate()`, but it was also created in `.generate()`, given its parameterization. The custom <class 'transformers.generation.logits_process.RepetitionPenaltyLogitsProcessor'> will take precedence. Please check the docstring of <class 'transformers.generation.logits_process.RepetitionPenaltyLogitsProcessor'> to see related `.generate()` flags.
+[transformers] A custom logits processor of type <class 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'> has been passed to `.generate()`, but it was also created in `.generate()`, given its parameterization. The custom <class 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'> will take precedence. Please check the docstring of <class 'transformers.generation.logits_process.MinNewTokensLengthLogitsProcessor'> to see related `.generate()` flags.
+[hf-assisted] equal=False 5.56s
+[spec] in=316 out=96 k=2 equal=True acc=0.71 base=6.09s spec=6.72s (0.91x)
+[spec] in=316 out=96 k=4 equal=True acc=0.54 base=6.09s spec=8.37s (0.73x)
+[spec] in=316 out=96 k=6 equal=True acc=0.49 base=6.09s spec=9.30s (0.65x)
+[hf-assisted] equal=False 12.32s
+[spec] in=488 out=32 k=2 equal=True acc=0.64 base=2.90s spec=4.13s (0.70x)
+[spec] in=488 out=32 k=4 equal=True acc=0.43 base=2.90s spec=4.89s (0.59x)
+[spec] in=488 out=32 k=6 equal=True acc=0.41 base=2.90s spec=5.24s (0.55x)
+[hf-assisted] equal=False 6.72s
+[spec] in=488 out=96 k=2 equal=True acc=0.83 base=6.80s spec=7.50s (0.91x)
+[spec] in=488 out=96 k=4 equal=True acc=0.67 base=6.80s spec=8.66s (0.79x)
+[spec] in=488 out=96 k=6 equal=True acc=0.61 base=6.80s spec=9.55s (0.71x)
+[hf-assisted] equal=False 12.97s
+saved results/decoding_benchmark.json

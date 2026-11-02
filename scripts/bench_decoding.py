@@ -54,7 +54,7 @@ def timed(fn, reps):
 
 def hf_assisted(ids, n):
     torch.cuda.synchronize(); torch.cuda.reset_peak_memory_stats(); t0 = time.perf_counter()
-    out = target.generate(ids, assistant_model=draft, max_new_tokens=n, min_new_tokens=n, do_sample=False,
+    out = target.generate(ids, assistant_model=draft, max_new_tokens=n, min_new_tokens=n, do_sample=False, repetition_penalty=1.0, temperature=None, top_p=None, top_k=None, attention_mask=torch.ones_like(ids), pad_token_id=tok.eos_token_id,
                           num_assistant_tokens=4, num_assistant_tokens_schedule="constant")
     torch.cuda.synchronize(); t = time.perf_counter() - t0
     return dict(tokens=out[0, ids.shape[1]:].tolist(), prefill_s=0.0, decode_s=t, total_s=t,

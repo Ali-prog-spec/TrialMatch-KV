@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TrialMatch-KV — Clinical Screening &amp; Inference Lab</title>
+  <title>TrialMatch-KV — Clinical Screening &amp; 3D Inference Lab</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -52,7 +52,8 @@
       --focus-ring: 0 0 0 3px rgba(140, 83, 43, 0.18);
       --shadow-sm: 0 1px 2px rgba(42, 30, 23, 0.04);
       --shadow-card: 0 4px 20px -3px rgba(42, 30, 23, 0.05), 0 2px 6px -1px rgba(42, 30, 23, 0.03);
-      --shadow-lg: 0 12px 32px -4px rgba(42, 30, 23, 0.08), 0 4px 12px -2px rgba(42, 30, 23, 0.04);
+      --shadow-3d: 0 4px 0 #180F09, 0 8px 16px rgba(42, 30, 23, 0.22);
+      --shadow-sec-3d: 0 3px 0 #D0C3B2, 0 4px 8px rgba(42, 30, 23, 0.05);
 
       --radius-sm: 8px;
       --radius-md: 12px;
@@ -69,11 +70,12 @@
       line-height: 1.55;
       background: var(--bg-base);
       background-image: 
-        radial-gradient(ellipse at 15% 0%, rgba(235, 224, 208, 0.5) 0%, transparent 60%),
-        radial-gradient(ellipse at 85% 100%, rgba(230, 217, 198, 0.4) 0%, transparent 55%);
+        radial-gradient(ellipse at 15% 0%, rgba(235, 224, 208, 0.55) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 100%, rgba(230, 217, 198, 0.45) 0%, transparent 55%);
       background-attachment: fixed;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
+      perspective: 1200px;
     }
 
     /* Custom Scrollbars */
@@ -84,13 +86,14 @@
 
     /* Top Navigation Header */
     header {
-      background: rgba(255, 253, 250, 0.92);
+      background: rgba(255, 253, 250, 0.94);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--card-border);
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 2px 10px rgba(42, 30, 23, 0.03);
     }
 
     .header-inner {
@@ -106,23 +109,27 @@
     .brand-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
+    /* 3D Monogram Logo */
     .brand-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #4A3324 0%, #2A1D16 100%);
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(145deg, #4F3627 0%, #2A1D16 100%);
       color: #FAF5EE;
-      border-radius: 10px;
+      border-radius: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 2px 6px rgba(42, 30, 23, 0.2);
       font-weight: 800;
-      font-size: 17px;
+      font-size: 18px;
       letter-spacing: -0.5px;
       flex-shrink: 0;
+      border: 1px solid #1C120C;
+      border-bottom: 3px solid #140C07;
+      box-shadow: 0 4px 0 #140C07, 0 8px 18px rgba(42, 30, 23, 0.28);
+      transform: translateY(-1px);
     }
 
     .brand-text h1 {
@@ -145,6 +152,7 @@
       padding: 2px 7px;
       border-radius: 6px;
       letter-spacing: 0.5px;
+      box-shadow: 0 1px 2px rgba(140, 83, 43, 0.08);
     }
 
     .brand-subtitle {
@@ -177,7 +185,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 2px 6px rgba(42, 30, 23, 0.04), inset 0 1px 0 rgba(255,255,255,0.8);
     }
 
     .banner-badge {
@@ -190,6 +198,7 @@
       letter-spacing: 0.4px;
       text-transform: uppercase;
       flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(108, 71, 14, 0.15);
     }
 
     /* Main Container */
@@ -211,7 +220,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 2px 6px rgba(42, 30, 23, 0.03), inset 0 1px 0 rgba(255,255,255,0.9);
     }
 
     .status-dot {
@@ -230,7 +239,7 @@
       100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
     }
 
-    /* Tab Navigation */
+    /* 3D Segmented Tab Navigation */
     .tabs-wrapper {
       margin-bottom: 18px;
     }
@@ -241,9 +250,10 @@
       border: 1px solid var(--card-border);
       padding: 4px;
       border-radius: var(--radius-md);
-      gap: 4px;
+      gap: 5px;
       max-width: 100%;
       overflow-x: auto;
+      box-shadow: inset 0 2px 4px rgba(42, 30, 23, 0.06);
     }
 
     .tabs button {
@@ -265,24 +275,35 @@
 
     .tabs button:hover:not(.on) {
       color: var(--text-main);
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.6);
     }
 
     .tabs button.on {
       background: var(--brand-espresso);
       color: #FAF6EF;
-      box-shadow: 0 2px 8px rgba(45, 31, 23, 0.22);
+      border-bottom: 2px solid #140C07;
+      box-shadow: 0 3px 0 #140C07, 0 6px 12px rgba(45, 31, 23, 0.22);
+      transform: translateY(-1px);
     }
 
-    /* Card Styling */
+    /* 3D Cards with Layered Elevation */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: var(--radius-lg);
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: var(--shadow-card);
-      transition: border-color 0.15s ease;
+      box-shadow: 0 1px 2px rgba(42,30,23,0.02),
+                  0 4px 12px -2px rgba(42,30,23,0.05),
+                  0 12px 28px -6px rgba(42,30,23,0.03),
+                  inset 0 1px 0 rgba(255,255,255,0.9);
+      transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      transform-style: preserve-3d;
+    }
+
+    .card-tilt {
+      transform-style: preserve-3d;
+      will-change: transform;
     }
 
     .card-header-bar {
@@ -319,7 +340,7 @@
       .header-inner { flex-direction: column; align-items: flex-start; }
     }
 
-    /* Textareas and Inputs */
+    /* 3D Inset Textareas and Inputs */
     textarea {
       width: 100%;
       min-height: 230px;
@@ -332,6 +353,7 @@
       background: var(--bg-warm-wash);
       color: var(--text-main);
       resize: vertical;
+      box-shadow: inset 0 2px 4px rgba(42, 30, 23, 0.04), 0 1px 0 rgba(255,255,255,0.9);
       transition: all 0.15s ease;
     }
 
@@ -339,7 +361,7 @@
       outline: none;
       background: #FFFFFF;
       border-color: var(--accent-caramel);
-      box-shadow: var(--focus-ring);
+      box-shadow: inset 0 2px 4px rgba(42, 30, 23, 0.02), var(--focus-ring);
     }
 
     select, input[type=number] {
@@ -352,6 +374,7 @@
       font-size: 13.5px;
       font-weight: 500;
       outline: none;
+      box-shadow: inset 0 1px 3px rgba(42, 30, 23, 0.03), 0 1px 0 rgba(255,255,255,0.8);
       transition: all 0.15s ease;
     }
 
@@ -360,11 +383,12 @@
       box-shadow: var(--focus-ring);
     }
 
-    /* Buttons */
+    /* Neo-Tactile 3D Buttons */
     button.primary {
-      background: linear-gradient(180deg, #3A271C 0%, #291C14 100%);
+      background: linear-gradient(180deg, #3D271C 0%, #2A1A12 100%);
       color: #FAF5EE;
-      border: 1px solid #1F140E;
+      border: 1px solid #1C110B;
+      border-bottom: 3px solid #140C07;
       border-radius: var(--radius-sm);
       padding: 9px 20px;
       font-family: inherit;
@@ -374,30 +398,34 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 2px 6px rgba(41, 28, 20, 0.22);
-      transition: all 0.15s ease;
+      box-shadow: 0 4px 0 #140C07, 0 6px 14px rgba(42, 30, 23, 0.22);
+      transform: translateY(-2px);
+      transition: all 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     button.primary:hover:not(:disabled) {
-      background: linear-gradient(180deg, #4A3325 0%, #36251B 100%);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(41, 28, 20, 0.28);
+      background: linear-gradient(180deg, #4A3225 0%, #342217 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 0 #140C07, 0 10px 20px rgba(42, 30, 23, 0.28);
     }
 
     button.primary:active:not(:disabled) {
-      transform: translateY(0);
-      background: #231710;
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #140C07, 0 2px 4px rgba(42, 30, 23, 0.2);
     }
 
     button.primary:disabled {
       opacity: 0.55;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
+      border-bottom-width: 1px;
     }
 
     button.sec {
-      background: #FFFFFF;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF6F0 100%);
       border: 1px solid var(--card-border-strong);
+      border-bottom: 2px solid #C9BDAC;
       color: var(--text-main);
       border-radius: var(--radius-sm);
       padding: 8px 16px;
@@ -408,14 +436,59 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 2px 0 #D0C3B2, 0 3px 6px rgba(42, 30, 23, 0.04);
+      transform: translateY(-1px);
+      transition: all 0.12s ease;
     }
 
     button.sec:hover {
-      background: var(--bg-subtle);
+      background: #F8F3EB;
       border-color: var(--text-secondary);
       color: var(--brand-espresso);
+      transform: translateY(-2px);
+      box-shadow: 0 3px 0 #C4B5A1, 0 6px 10px rgba(42, 30, 23, 0.07);
+    }
+
+    button.sec:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 0 #C4B5A1, 0 1px 2px rgba(42, 30, 23, 0.05);
+    }
+
+    /* 3D Pill Segment Controls */
+    .pill-group {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 3px;
+      box-shadow: inset 0 1px 3px rgba(42, 30, 23, 0.05);
+    }
+
+    .pill-btn {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .pill-btn:hover:not(.on) {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .pill-btn.on {
+      background: var(--brand-espresso);
+      color: #FAF5EE;
+      box-shadow: 0 2px 0 #140C07, 0 3px 6px rgba(42, 30, 23, 0.15);
+      transform: translateY(-1px);
     }
 
     /* Sample Selector Bar */
@@ -446,13 +519,15 @@
       font-size: 12px;
       margin-right: 8px;
       letter-spacing: .02em;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 2px rgba(42, 30, 23, 0.06);
     }
-    .tag-good { background: #d1fadf; color: #157f3b; }
-    .tag-bad { background: #fee4e2; color: #b42318; }
-    .tag-invalid { background: #fef0c7; color: #b54708; }
-    .tag-validation { background: #e5e7eb; color: #444; }
+    .tag-good { background: #d1fadf; color: #157f3b; border-color: #a3e9b7; }
+    .tag-bad { background: #fee4e2; color: #b42318; border-color: #f7b7b1; }
+    .tag-invalid { background: #fef0c7; color: #b54708; border-color: #fbd68b; }
+    .tag-validation { background: #e0eaff; color: #175cd3; border-color: #b2ccff; }
 
-    /* Screening Run Controls */
+    /* Controls Row */
     .controls-row {
       display: flex;
       flex-wrap: wrap;
@@ -484,7 +559,8 @@
       border-radius: var(--radius-lg);
       padding: 22px;
       margin-bottom: 16px;
-      box-shadow: var(--shadow-card);
+      box-shadow: 0 4px 0 #E3D7C8, 0 10px 24px -4px rgba(42, 30, 23, 0.08);
+      transform: translateY(-2px);
     }
 
     .big {
@@ -513,6 +589,7 @@
       padding: 5px 12px;
       border-radius: var(--radius-full);
       font-family: 'JetBrains Mono', Consolas, monospace;
+      box-shadow: 0 1px 2px rgba(42, 30, 23, 0.04);
     }
 
     .action-group {
@@ -529,6 +606,7 @@
       border-radius: var(--radius-md);
       border: 1px solid var(--card-border);
       background: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(42, 30, 23, 0.02);
     }
 
     table {
@@ -547,17 +625,11 @@
       letter-spacing: 0.5px;
       padding: 11px 14px;
       border-bottom: 1px solid var(--card-border);
-      border-top: none;
-      border-left: none;
-      border-right: none;
     }
 
     td {
       padding: 12px 14px;
       border-bottom: 1px solid var(--card-border);
-      border-top: none;
-      border-left: none;
-      border-right: none;
       vertical-align: top;
       color: var(--text-main);
     }
@@ -581,6 +653,7 @@
       letter-spacing: 0.2px;
       line-height: 1.4;
       border: 1px solid transparent;
+      box-shadow: 0 1px 3px rgba(42, 30, 23, 0.05);
     }
 
     .included, .not_excluded {
@@ -607,17 +680,18 @@
       border-color: var(--neutral-border);
     }
 
-    /* Evidence Block */
+    /* 3D Evidence Block */
     .ev {
       background: #FAF7F2;
       border: 1px solid #EFE6D9;
       border-left: 3px solid var(--accent-caramel);
       border-radius: 6px;
-      padding: 6px 10px;
-      margin: 4px 0;
+      padding: 7px 11px;
+      margin: 5px 0;
       font-size: 12.5px;
       line-height: 1.45;
       color: var(--text-main);
+      box-shadow: 0 2px 4px rgba(42, 30, 23, 0.03);
     }
 
     .ev b {
@@ -647,7 +721,7 @@
 
     .hide { display: none !important; }
 
-    /* Benchmark Bars */
+    /* 2D Benchmark Bars (Kept for instant reference) */
     .benchmark-bar-row {
       margin-bottom: 10px;
     }
@@ -663,11 +737,12 @@
 
     .benchmark-track {
       width: 100%;
-      height: 22px;
+      height: 20px;
       background: var(--bg-subtle);
       border-radius: 6px;
       overflow: hidden;
       border: 1px solid var(--card-border);
+      box-shadow: inset 0 1px 3px rgba(42, 30, 23, 0.05);
     }
 
     .bar {
@@ -705,6 +780,91 @@
       border-radius: 4px;
       border: 1px solid var(--card-border);
     }
+
+    /* 3D Canvas Stage Container */
+    .stage-3d-wrapper {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      background: radial-gradient(circle at 50% 40%, #FFFDF9 0%, #F5EFE6 100%);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(42, 30, 23, 0.05), 0 2px 6px rgba(42, 30, 23, 0.02);
+      margin-top: 14px;
+      user-select: none;
+    }
+
+    .canvas-3d {
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+      display: block;
+    }
+
+    .canvas-3d:active {
+      cursor: grabbing;
+    }
+
+    .stage-3d-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--card-border);
+      pointer-events: none;
+    }
+
+    .stage-3d-tooltip {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text-main);
+      box-shadow: 0 4px 16px rgba(42, 30, 23, 0.1);
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .a3d-legend-bar {
+      position: absolute;
+      bottom: 12px;
+      right: 14px;
+      display: flex;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--card-border);
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+    }
   </style>
 </head>
 <body>
@@ -715,7 +875,7 @@
       <div class="brand-icon">TM</div>
       <div class="brand-text">
         <h1>TrialMatch <span class="badge-kv">KV-CACHE &amp; SPECULATIVE</span></h1>
-        <p class="brand-subtitle">Evidence-grounded clinical-trial criterion screening with custom inference engines</p>
+        <p class="brand-subtitle">Evidence-grounded clinical-trial criterion screening with 3D inference visualizers</p>
       </div>
     </div>
     <div class="header-status-wrap">
@@ -757,7 +917,7 @@
 
   <!-- Tab 1: Screening -->
   <section id="t-screen">
-    <div class="card">
+    <div class="card card-tilt">
       <div class="card-header-bar">
         <div class="card-title">
           <svg class="card-title-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
@@ -779,7 +939,7 @@
     </div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card card-tilt">
         <div class="card-header-bar">
           <div class="card-title">1. Patient Clinical Record</div>
         </div>
@@ -787,7 +947,7 @@
         <textarea id="note" placeholder="Paste patient description or clinical note here..."></textarea>
       </div>
 
-      <div class="card">
+      <div class="card card-tilt">
         <div class="card-header-bar">
           <div class="card-title">2. Trial Eligibility Criteria</div>
         </div>
@@ -796,7 +956,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card card-tilt">
       <div class="controls-row">
         <div class="controls-inputs">
           <span><b>Decoding Engine:</b></span>
@@ -862,7 +1022,7 @@
 
   <!-- Tab 2: Inference Comparison -->
   <section id="t-bench" class="hide">
-    <div class="card">
+    <div class="card card-tilt">
       <div class="card-header-bar">
         <div class="card-title">Live Decoder Benchmark</div>
       </div>
@@ -900,14 +1060,42 @@
           <tbody></tbody>
         </table>
       </div>
-      <h4 style="margin: 0 0 10px 0; font-size: 13.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Throughput Comparison (tokens / sec)</h4>
+
+      <!-- 3D Interactive Graph for Decoders -->
+      <div style="margin-top: 24px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+          <div>
+            <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+              3D Decoder Engine Performance Comparison
+            </h4>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="pill-group" id="b3d-pills">
+              <button class="pill-btn on" data-metric="tok_per_s">Throughput (tok/s)</button>
+              <button class="pill-btn" data-metric="total_ms">Latency (ms)</button>
+              <button class="pill-btn" data-metric="stacked">Prefill vs Decode</button>
+              <button class="pill-btn" data-metric="peak_MB">Peak VRAM (MB)</button>
+            </div>
+            <button class="sec" id="b3d-reset-btn" style="padding: 4px 10px; font-size: 12px;">↺ Reset View</button>
+          </div>
+        </div>
+
+        <div class="stage-3d-wrapper">
+          <canvas id="b3d-canvas" class="canvas-3d"></canvas>
+          <div class="stage-3d-hint">🖱️ Drag to rotate in 3D &bull; Scroll to zoom</div>
+          <div id="b3d-tooltip" class="stage-3d-tooltip hide"></div>
+        </div>
+      </div>
+
+      <h4 style="margin: 22px 0 10px 0; font-size: 13.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">2D Throughput Timeline</h4>
       <div id="bars"></div>
     </div>
   </section>
 
   <!-- Tab 3: Attention Lab -->
   <section id="t-attn" class="hide">
-    <div class="card">
+    <div class="card card-tilt">
       <div class="card-header-bar">
         <div class="card-title">Custom Tiled Attention Benchmark</div>
       </div>
@@ -927,6 +1115,7 @@
         </button>
       </div>
       <div id="errA"></div>
+      
       <div class="table-container hide" id="atab" style="margin-top: 14px;">
         <table>
           <thead>
@@ -939,6 +1128,35 @@
           <tbody></tbody>
         </table>
       </div>
+
+      <!-- 3D Attention Visualization Stage -->
+      <div id="a3d-wrapper-card" style="margin-top: 22px;">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+          <div>
+            <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
+              3D Attention Matrix &amp; Block Tiling Explorer
+            </h4>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="pill-group" id="a3d-pills">
+              <button class="pill-btn on" data-view="tiling">3D Block Tiling Grid</button>
+              <button class="pill-btn" data-view="latency">3D Latency Pillars</button>
+            </div>
+            <button class="sec" id="a3d-reset-btn" style="padding: 4px 10px; font-size: 12px;">↺ Reset View</button>
+          </div>
+        </div>
+
+        <div class="stage-3d-wrapper">
+          <canvas id="a3d-canvas" class="canvas-3d"></canvas>
+          <div class="stage-3d-hint">🖱️ Drag to rotate 3D matrix &bull; Scroll to zoom</div>
+          <div id="a3d-legend" class="a3d-legend-bar">
+            <span class="legend-item"><span class="legend-swatch" style="background:#B8733E;"></span> Computed Tile ($B\times B$)</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#D89B57;"></span> Diagonal Causal Tile</span>
+            <span class="legend-item"><span class="legend-swatch" style="background:#E2DACD;"></span> Masked Upper Tile</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -947,12 +1165,35 @@
     <div class="card" id="resbox">
       <span class="spinner"></span> Loading experiment records from results/…
     </div>
+    
+    <!-- 3D Speedup Landscape Box -->
+    <div class="card hide" id="r3d-box" style="margin-top: 18px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px;">
+        <div>
+          <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+            3D KV-Cache Speedup Landscape
+          </h4>
+          <div class="muted" style="margin-top: 2px;">Input Length &times; Output Tokens &times; Empirical Speedup Factor (interactive 3D surface)</div>
+        </div>
+        <button class="sec" id="r3d-reset-btn" style="padding: 4px 10px; font-size: 12px;">↺ Reset View</button>
+      </div>
+
+      <div class="stage-3d-wrapper">
+        <canvas id="r3d-canvas" class="canvas-3d"></canvas>
+        <div class="stage-3d-hint">🖱️ Drag to rotate 3D speedup landscape &bull; Scroll to zoom</div>
+        <div id="r3d-tooltip" class="stage-3d-tooltip hide"></div>
+      </div>
+    </div>
   </section>
 </main>
 
 <script>
 const $ = s => document.querySelector(s);
 let last = null;
+let lastBenchData = null;
+let lastAttnData = null;
+let lastResData = null;
 const cls = l => l.replace(/ /g, '_');
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
@@ -968,13 +1209,659 @@ async function api(p, body) {
   return j;
 }
 
-// Tab navigation
+// =========================================================================
+// 3D Canvas Rendering Engine (Pure Canvas 2D + 3D Math, zero external CDN)
+// =========================================================================
+
+class Canvas3DScene {
+  constructor(canvasId, options = {}) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas.getContext('2d');
+    this.rotX = options.rotX ?? 0.48; // pitch
+    this.rotY = options.rotY ?? -0.65; // yaw
+    this.defaultRotX = this.rotX;
+    this.defaultRotY = this.rotY;
+    this.zoom = options.zoom ?? 1.0;
+    this.defaultZoom = this.zoom;
+    this.fov = options.fov ?? 520;
+    this.isDragging = false;
+    this.lastX = 0;
+    this.lastY = 0;
+    this.hoverIdx = -1;
+    this.hoverCallback = options.onHover || null;
+    this.drawCallback = options.draw || null;
+    this.setupEvents();
+    this.resize();
+  }
+
+  resize() {
+    if (!this.canvas) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    this.width = rect.width || 600;
+    this.height = rect.height || 360;
+    this.canvas.width = Math.floor(this.width * dpr);
+    this.canvas.height = Math.floor(this.height * dpr);
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.render();
+  }
+
+  setupEvents() {
+    const c = this.canvas;
+    c.addEventListener('pointerdown', e => {
+      this.isDragging = true;
+      this.lastX = e.clientX;
+      this.lastY = e.clientY;
+      c.setPointerCapture(e.pointerId);
+    });
+
+    window.addEventListener('pointermove', e => {
+      if (!this.isDragging) {
+        // Track hover if inside canvas
+        const rect = c.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          if (this.checkHover) this.checkHover(mouseX, mouseY);
+        }
+        return;
+      }
+      const dx = e.clientX - this.lastX;
+      const dy = e.clientY - this.lastY;
+      this.rotY += dx * 0.009;
+      this.rotX = Math.max(0.12, Math.min(1.4, this.rotX + dy * 0.009));
+      this.lastX = e.clientX;
+      this.lastY = e.clientY;
+      this.render();
+    });
+
+    window.addEventListener('pointerup', () => {
+      this.isDragging = false;
+    });
+
+    c.addEventListener('wheel', e => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 1.08 : 0.92;
+      this.zoom = Math.max(0.5, Math.min(2.5, this.zoom * delta));
+      this.render();
+    }, { passive: false });
+  }
+
+  reset() {
+    this.rotX = this.defaultRotX;
+    this.rotY = this.defaultRotY;
+    this.zoom = this.defaultZoom;
+    this.render();
+  }
+
+  // 3D Point projection
+  project(x, y, z) {
+    const cx = this.width / 2;
+    const cy = this.height / 2 + 30; // slight floor offset
+    
+    // Scale by zoom
+    x *= this.zoom;
+    y *= this.zoom;
+    z *= this.zoom;
+
+    // Rotate around Y
+    const cosY = Math.cos(this.rotY), sinY = Math.sin(this.rotY);
+    const x1 = x * cosY + z * sinY;
+    const z1 = -x * sinY + z * cosY;
+
+    // Rotate around X
+    const cosX = Math.cos(this.rotX), sinX = Math.sin(this.rotX);
+    const y2 = y * cosX - z1 * sinX;
+    const z2 = y * sinX + z1 * cosX;
+
+    // Perspective factor
+    const dist = 600;
+    const scale = this.fov / (dist + z2);
+
+    return {
+      x: cx + x1 * scale,
+      y: cy + y2 * scale,
+      z: z2,
+      scale: scale
+    };
+  }
+
+  // Draw 3D floor grid
+  drawGrid(size = 180, step = 45) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(216, 202, 186, 0.55)';
+    for (let i = -size; i <= size; i += step) {
+      const p1 = this.project(i, 0, -size);
+      const p2 = this.project(i, 0, size);
+      ctx.beginPath();
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
+      ctx.stroke();
+
+      const p3 = this.project(-size, 0, i);
+      const p4 = this.project(size, 0, i);
+      ctx.beginPath();
+      ctx.moveTo(p3.x, p3.y);
+      ctx.lineTo(p4.x, p4.y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  render() {
+    if (!this.ctx || !this.width) return;
+    this.ctx.clearRect(0, 0, this.width, this.height);
+    if (this.drawCallback) {
+      this.drawCallback(this);
+    }
+  }
+}
+
+// -------------------------------------------------------------
+// 3D Visualizer 1: Live Inference Comparison
+// -------------------------------------------------------------
+let bench3D = null;
+let currentBenchMetric = 'tok_per_s';
+
+function initBench3D() {
+  if (bench3D) return;
+  bench3D = new Canvas3DScene('b3d-canvas', {
+    rotX: 0.44,
+    rotY: -0.55,
+    draw: drawBenchScene
+  });
+
+  $('#b3d-reset-btn').onclick = () => bench3D.reset();
+  
+  document.querySelectorAll('#b3d-pills .pill-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#b3d-pills .pill-btn').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      currentBenchMetric = btn.dataset.metric;
+      bench3D.render();
+    };
+  });
+}
+
+function drawBenchScene(s) {
+  s.drawGrid(160, 40);
+
+  if (!lastBenchData || !lastBenchData.rows || !lastBenchData.rows.length) {
+    s.ctx.fillStyle = '#8C7869';
+    s.ctx.font = '13px "Plus Jakarta Sans", sans-serif';
+    s.ctx.textAlign = 'center';
+    s.ctx.fillText('Run benchmark to populate live 3D comparison', s.width / 2, s.height / 2);
+    return;
+  }
+
+  const rows = lastBenchData.rows;
+  const pillarW = 42;
+  const pillarD = 42;
+  const spacing = 85;
+  const startX = -((rows.length - 1) * spacing) / 2;
+
+  // Max value calculation
+  let maxVal = 1;
+  if (currentBenchMetric === 'stacked') {
+    maxVal = Math.max(...rows.map(r => r.total_ms)) || 1;
+  } else {
+    maxVal = Math.max(...rows.map(r => r[currentBenchMetric] || 0)) || 1;
+  }
+
+  const maxH = 150;
+  const polygons = [];
+
+  rows.forEach((r, idx) => {
+    const x = startX + idx * spacing;
+    const z = 0;
+
+    // Palette theme for each decoder
+    let colorSet;
+    if (idx === 0) {
+      // No-cache: Mocha Espresso
+      colorSet = { top: '#5A3D2A', front: '#422B1C', side: '#2F1E13', highlight: '#735038' };
+    } else if (idx === 1) {
+      // KV cache: Warm Caramel Terracotta
+      colorSet = { top: '#B46B34', front: '#935324', side: '#754019', highlight: '#CD834A' };
+    } else {
+      // Speculative: Rich Golden Honey
+      colorSet = { top: '#D98A36', front: '#B86F24', side: '#915313', highlight: '#E8A352' };
+    }
+
+    if (currentBenchMetric === 'stacked') {
+      // Stacked 3D Pillar (Prefill + Decode)
+      const hPrefill = Math.max(6, (r.prefill_ms / maxVal) * maxH);
+      const hDecode = Math.max(6, (r.decode_ms / maxVal) * maxH);
+
+      // Bottom segment: Prefill (Sage Mocha)
+      addPillarFaces(polygons, s, x, z, pillarW, pillarD, 0, hPrefill, {
+        top: '#786858', front: '#615243', side: '#4A3D30', highlight: '#8C7C6B'
+      }, `Prefill: ${r.prefill_ms.toFixed(0)}ms`);
+
+      // Top segment: Decode
+      addPillarFaces(polygons, s, x, z, pillarW, pillarD, hPrefill, hPrefill + hDecode, colorSet, 
+        `${r.method}: ${r.total_ms.toFixed(0)}ms total`);
+    } else {
+      const val = r[currentBenchMetric] || 0;
+      const h = Math.max(8, (val / maxVal) * maxH);
+      
+      let labelVal = val.toFixed(1);
+      if (currentBenchMetric === 'total_ms' || currentBenchMetric === 'peak_MB') {
+        labelVal = val.toFixed(0);
+      }
+      
+      addPillarFaces(polygons, s, x, z, pillarW, pillarD, 0, h, colorSet, `${r.method}: ${labelVal}`);
+    }
+
+    // Ground shadow
+    drawPillarShadow(s, x, z, pillarW, pillarD);
+  });
+
+  // Sort polygons by depth Z (Painter's algorithm)
+  polygons.sort((a, b) => b.depth - a.depth);
+
+  polygons.forEach(p => {
+    s.ctx.save();
+    s.ctx.fillStyle = p.color;
+    s.ctx.strokeStyle = p.stroke || 'rgba(42,30,23,0.15)';
+    s.ctx.lineWidth = 1;
+    s.ctx.beginPath();
+    s.ctx.moveTo(p.pts[0].x, p.pts[0].y);
+    for (let i = 1; i < p.pts.length; i++) {
+      s.ctx.lineTo(p.pts[i].x, p.pts[i].y);
+    }
+    s.ctx.closePath();
+    s.ctx.fill();
+    s.ctx.stroke();
+    s.ctx.restore();
+  });
+
+  // Draw 3D Floating Labels above pillars
+  rows.forEach((r, idx) => {
+    const x = startX + idx * spacing;
+    let h;
+    let text;
+    if (currentBenchMetric === 'stacked') {
+      h = Math.max(6, (r.total_ms / maxVal) * maxH);
+      text = `${r.total_ms.toFixed(0)}ms`;
+    } else {
+      const val = r[currentBenchMetric] || 0;
+      h = Math.max(8, (val / maxVal) * maxH);
+      text = currentBenchMetric === 'tok_per_s' ? `${val.toFixed(1)} tok/s` :
+             currentBenchMetric === 'total_ms' ? `${val.toFixed(0)} ms` : `${val.toFixed(0)} MB`;
+    }
+
+    const topPt = s.project(x, -h - 18, 0);
+    s.ctx.save();
+    s.ctx.font = 'bold 12px "JetBrains Mono", monospace';
+    s.ctx.textAlign = 'center';
+    s.ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    const tw = s.ctx.measureText(text).width + 12;
+    s.ctx.fillRect(topPt.x - tw / 2, topPt.y - 12, tw, 18);
+    s.ctx.strokeStyle = '#D8CABA';
+    s.ctx.strokeRect(topPt.x - tw / 2, topPt.y - 12, tw, 18);
+    s.ctx.fillStyle = '#2A1E17';
+    s.ctx.fillText(text, topPt.x, topPt.y + 1);
+
+    // Baseline decoder name
+    const basePt = s.project(x, 15, pillarD / 2 + 10);
+    s.ctx.font = '600 11px "Plus Jakarta Sans", sans-serif';
+    s.ctx.fillStyle = '#5C4A3E';
+    const shortName = r.method.replace(' (reference)', '').replace('k=', 'k:');
+    s.ctx.fillText(shortName, basePt.x, basePt.y);
+    s.ctx.restore();
+  });
+}
+
+function addPillarFaces(polys, s, x, z, w, d, baseH, topH, colors, meta) {
+  const hw = w / 2;
+  const hd = d / 2;
+
+  // 8 vertices in local 3D coordinates
+  // Bottom quad (y = -baseH)
+  const b00 = s.project(x - hw, -baseH, z - hd);
+  const b10 = s.project(x + hw, -baseH, z - hd);
+  const b11 = s.project(x + hw, -baseH, z + hd);
+  const b01 = s.project(x - hw, -baseH, z + hd);
+
+  // Top quad (y = -topH)
+  const t00 = s.project(x - hw, -topH, z - hd);
+  const t10 = s.project(x + hw, -topH, z - hd);
+  const t11 = s.project(x + hw, -topH, z + hd);
+  const t01 = s.project(x - hw, -topH, z + hd);
+
+  // Helper to calculate depth Z
+  const avgZ = pts => pts.reduce((acc, p) => acc + p.z, 0) / pts.length;
+
+  // Top Face
+  polys.push({
+    pts: [t00, t10, t11, t01],
+    color: colors.top,
+    depth: avgZ([t00, t10, t11, t01]),
+    meta
+  });
+
+  // Front Face (+Z)
+  polys.push({
+    pts: [t01, t11, b11, b01],
+    color: colors.front,
+    depth: avgZ([t01, t11, b11, b01]),
+    meta
+  });
+
+  // Right Face (+X)
+  polys.push({
+    pts: [t10, t11, b11, b10],
+    color: colors.side,
+    depth: avgZ([t10, t11, b11, b10]),
+    meta
+  });
+
+  // Left Face (-X)
+  polys.push({
+    pts: [t00, t01, b01, b00],
+    color: colors.side,
+    depth: avgZ([t00, t01, b01, b00]),
+    meta
+  });
+}
+
+function drawPillarShadow(s, x, z, w, d) {
+  const p = s.project(x, 0, z);
+  s.ctx.save();
+  s.ctx.beginPath();
+  s.ctx.ellipse(p.x, p.y, (w * s.zoom * 0.75), (d * s.zoom * 0.45), 0, 0, Math.PI * 2);
+  s.ctx.fillStyle = 'rgba(42, 30, 23, 0.08)';
+  s.ctx.fill();
+  s.ctx.restore();
+}
+
+// -------------------------------------------------------------
+// 3D Visualizer 2: Attention Lab 3D Visualizer
+// -------------------------------------------------------------
+let attn3D = null;
+let currentAttnView = 'tiling';
+
+function initAttn3D() {
+  if (attn3D) return;
+  attn3D = new Canvas3DScene('a3d-canvas', {
+    rotX: 0.52,
+    rotY: -0.62,
+    draw: drawAttnScene
+  });
+
+  $('#a3d-reset-btn').onclick = () => attn3D.reset();
+
+  document.querySelectorAll('#a3d-pills .pill-btn').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('#a3d-pills .pill-btn').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      currentAttnView = btn.dataset.view;
+      $('#a3d-legend').classList.toggle('hide', currentAttnView !== 'tiling');
+      attn3D.render();
+    };
+  });
+}
+
+function drawAttnScene(s) {
+  s.drawGrid(160, 40);
+
+  if (currentAttnView === 'tiling') {
+    // 3D Block Tiling Grid representation
+    const tiles = 5;
+    const tileSize = 28;
+    const startOffset = -((tiles - 1) * tileSize) / 2;
+    const polys = [];
+
+    for (let r = 0; r < tiles; r++) {
+      for (let c = 0; c < tiles; c++) {
+        const x = startOffset + c * tileSize;
+        const z = startOffset + r * tileSize;
+
+        let h = 0;
+        let colorSet;
+
+        if (c > r) {
+          // Masked upper triangle
+          h = 2;
+          colorSet = { top: '#EFE7DC', front: '#DDD4C7', side: '#CDC3B5' };
+        } else if (c === r) {
+          // Diagonal causal tile
+          h = 18;
+          colorSet = { top: '#D89B57', front: '#BD803E', side: '#9F662A' };
+        } else {
+          // Fully computed lower tile
+          h = 24;
+          colorSet = { top: '#B8733E', front: '#9A5B2B', side: '#7E461E' };
+        }
+
+        addPillarFaces(polys, s, x, z, tileSize - 4, tileSize - 4, 0, h, colorSet);
+      }
+    }
+
+    polys.sort((a, b) => b.depth - a.depth);
+    polys.forEach(p => {
+      s.ctx.save();
+      s.ctx.fillStyle = p.color;
+      s.ctx.strokeStyle = 'rgba(42,30,23,0.12)';
+      s.ctx.lineWidth = 1;
+      s.ctx.beginPath();
+      s.ctx.moveTo(p.pts[0].x, p.pts[0].y);
+      for (let i = 1; i < p.pts.length; i++) s.ctx.lineTo(p.pts[i].x, p.pts[i].y);
+      s.ctx.closePath();
+      s.ctx.fill();
+      s.ctx.stroke();
+      s.ctx.restore();
+    });
+
+    // 3D Axis annotations
+    const qLabel = s.project(-80, 0, 0);
+    const kLabel = s.project(0, 0, 80);
+    s.ctx.save();
+    s.ctx.font = 'bold 11px "JetBrains Mono", monospace';
+    s.ctx.fillStyle = '#8C532B';
+    s.ctx.fillText('Query Blocks (Q) ↓', qLabel.x - 30, qLabel.y);
+    s.ctx.fillText('Key Blocks (K^T) →', kLabel.x, kLabel.y + 16);
+    s.ctx.restore();
+
+  } else {
+    // 3D Latency Pillars Comparison
+    if (!lastAttnData) {
+      s.ctx.fillStyle = '#8C7869';
+      s.ctx.font = '13px "Plus Jakarta Sans", sans-serif';
+      s.ctx.textAlign = 'center';
+      s.ctx.fillText('Click "Run Attention Benchmark" to compare implementations', s.width / 2, s.height / 2);
+      return;
+    }
+
+    const entries = Object.entries(lastAttnData);
+    const maxMs = Math.max(...entries.map(([, v]) => v.ms)) || 1;
+    const polys = [];
+    const pillarW = 46;
+    const pillarD = 46;
+    const spacing = 95;
+    const startX = -((entries.length - 1) * spacing) / 2;
+
+    entries.forEach(([name, v], idx) => {
+      const x = startX + idx * spacing;
+      const h = Math.max(10, (v.ms / maxMs) * 140);
+      
+      let colors;
+      if (idx === 0) colors = { top: '#5A3D2A', front: '#422B1C', side: '#2F1E13' }; // Ref
+      else if (idx === 1) colors = { top: '#B46B34', front: '#935324', side: '#754019' }; // Tiled
+      else colors = { top: '#285A2A', front: '#1E4720', side: '#153316' }; // PyTorch SDPA
+
+      addPillarFaces(polys, s, x, 0, pillarW, pillarD, 0, h, colors);
+      drawPillarShadow(s, x, 0, pillarW, pillarD);
+    });
+
+    polys.sort((a, b) => b.depth - a.depth);
+    polys.forEach(p => {
+      s.ctx.save();
+      s.ctx.fillStyle = p.color;
+      s.ctx.strokeStyle = 'rgba(42,30,23,0.15)';
+      s.ctx.beginPath();
+      s.ctx.moveTo(p.pts[0].x, p.pts[0].y);
+      for (let i = 1; i < p.pts.length; i++) s.ctx.lineTo(p.pts[i].x, p.pts[i].y);
+      s.ctx.closePath();
+      s.ctx.fill();
+      s.ctx.stroke();
+      s.ctx.restore();
+    });
+
+    // 3D labels
+    entries.forEach(([name, v], idx) => {
+      const x = startX + idx * spacing;
+      const h = Math.max(10, (v.ms / maxMs) * 140);
+      const topPt = s.project(x, -h - 16, 0);
+      s.ctx.save();
+      s.ctx.font = 'bold 12px "JetBrains Mono", monospace';
+      s.ctx.textAlign = 'center';
+      s.ctx.fillStyle = '#2A1E17';
+      s.ctx.fillText(`${v.ms.toFixed(2)}ms`, topPt.x, topPt.y);
+
+      const basePt = s.project(x, 15, pillarD / 2 + 8);
+      s.ctx.font = '600 11px "Plus Jakarta Sans", sans-serif';
+      s.ctx.fillStyle = '#5C4A3E';
+      s.ctx.fillText(name.replace('PyTorch ', ''), basePt.x, basePt.y);
+      s.ctx.restore();
+    });
+  }
+}
+
+// -------------------------------------------------------------
+// 3D Visualizer 3: Saved Experiments KV-Cache Speedup Landscape
+// -------------------------------------------------------------
+let res3D = null;
+
+function initRes3D(benchmarkData) {
+  if (!benchmarkData || !benchmarkData.cache_tests) return;
+  lastResData = benchmarkData.cache_tests;
+  $('#r3d-box').classList.remove('hide');
+
+  if (!res3D) {
+    res3D = new Canvas3DScene('r3d-canvas', {
+      rotX: 0.52,
+      rotY: -0.68,
+      draw: drawResScene
+    });
+    $('#r3d-reset-btn').onclick = () => res3D.reset();
+  } else {
+    res3D.resize();
+  }
+}
+
+function drawResScene(s) {
+  s.drawGrid(160, 40);
+
+  if (!lastResData || !lastResData.length) return;
+
+  // Group by input_len and output_len
+  const inputs = [...new Set(lastResData.map(d => d.input_len))].sort((a,b) => a - b);
+  const outputs = [...new Set(lastResData.map(d => d.output_len))].sort((a,b) => a - b);
+  const maxSpeedup = Math.max(...lastResData.map(d => d.speedup_total)) || 5;
+
+  const cellW = 32;
+  const cellD = 32;
+  const spacingX = 48;
+  const spacingZ = 48;
+  const startX = -((inputs.length - 1) * spacingX) / 2;
+  const startZ = -((outputs.length - 1) * spacingZ) / 2;
+
+  const polys = [];
+
+  inputs.forEach((inLen, i) => {
+    outputs.forEach((outLen, j) => {
+      const match = lastResData.find(d => d.input_len === inLen && d.output_len === outLen);
+      const speedup = match ? match.speedup_total : 1.0;
+      const x = startX + i * spacingX;
+      const z = startZ + j * spacingZ;
+      const h = Math.max(8, (speedup / maxSpeedup) * 130);
+
+      // Height-based warm gradient
+      const ratio = speedup / maxSpeedup;
+      const topColor = ratio > 0.7 ? '#D98A36' : ratio > 0.4 ? '#B46B34' : '#6A4A33';
+      const frontColor = ratio > 0.7 ? '#B86F24' : ratio > 0.4 ? '#935324' : '#523725';
+      const sideColor = ratio > 0.7 ? '#915313' : ratio > 0.4 ? '#754019' : '#3D281A';
+
+      addPillarFaces(polys, s, x, z, cellW, cellD, 0, h, { top: topColor, front: frontColor, side: sideColor });
+      drawPillarShadow(s, x, z, cellW, cellD);
+    });
+  });
+
+  polys.sort((a, b) => b.depth - a.depth);
+  polys.forEach(p => {
+    s.ctx.save();
+    s.ctx.fillStyle = p.color;
+    s.ctx.strokeStyle = 'rgba(42,30,23,0.12)';
+    s.ctx.beginPath();
+    s.ctx.moveTo(p.pts[0].x, p.pts[0].y);
+    for (let i = 1; i < p.pts.length; i++) s.ctx.lineTo(p.pts[i].x, p.pts[i].y);
+    s.ctx.closePath();
+    s.ctx.fill();
+    s.ctx.stroke();
+    s.ctx.restore();
+  });
+
+  // 3D Axis Labels
+  const xLabelPt = s.project(startX + (inputs.length - 1) * spacingX / 2, 0, startZ + (outputs.length - 1) * spacingZ + 25);
+  s.ctx.save();
+  s.ctx.font = 'bold 11px "JetBrains Mono", monospace';
+  s.ctx.fillStyle = '#8C532B';
+  s.ctx.textAlign = 'center';
+  s.ctx.fillText('Generation Tokens (Output Len) →', xLabelPt.x, xLabelPt.y);
+
+  const zLabelPt = s.project(startX - 25, 0, startZ + (outputs.length - 1) * spacingZ / 2);
+  s.ctx.fillText('Prompt Tokens (Input Len) ↓', zLabelPt.x, zLabelPt.y);
+  s.ctx.restore();
+}
+
+// =========================================================================
+// Tab Navigation & 3D Stage Refresh
+// =========================================================================
+
 document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
   b.classList.add('on');
   ['screen', 'bench', 'attn', 'res'].forEach(t => $('#t-' + t).classList.toggle('hide', t !== b.dataset.t));
-  if (b.dataset.t === 'res') loadRes();
+  
+  if (b.dataset.t === 'bench') {
+    initBench3D();
+    if (bench3D) setTimeout(() => bench3D.resize(), 50);
+  } else if (b.dataset.t === 'attn') {
+    initAttn3D();
+    if (attn3D) setTimeout(() => attn3D.resize(), 50);
+  } else if (b.dataset.t === 'res') {
+    loadRes();
+  }
 });
+
+// =========================================================================
+// Interactive 3D Card Hover Tilt
+// =========================================================================
+
+document.querySelectorAll('.card-tilt').forEach(card => {
+  card.addEventListener('pointermove', e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotX = -((y - centerY) / centerY) * 3.5;
+    const rotY = ((x - centerX) / centerX) * 3.5;
+    card.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) translateY(-2px)`;
+  });
+
+  card.addEventListener('pointerleave', () => {
+    card.style.transform = '';
+  });
+});
+
+// =========================================================================
+// Core Application Logic (Screening, Samples, Benchmarks)
+// =========================================================================
 
 let samples = [];
 
@@ -1117,6 +2004,7 @@ $('#runB').onclick = async () => {
   $('#runB').disabled = true;
   try {
     const d = await api('/api/benchmark', { ...payload(), k: +$('#bk').value });
+    lastBenchData = d;
     $('#bout').classList.remove('hide');
     $('#bmeta').innerHTML = `<b>Prompt Tokens:</b> ${d.prompt_tokens} &nbsp;|&nbsp; <b>Criterion:</b> ${esc(d.criterion)} &nbsp;|&nbsp; <b>Greedy Output:</b> <span style="color:var(--brand-espresso);">${esc(d.output)}</span>`;
     
@@ -1144,6 +2032,10 @@ $('#runB').onclick = async () => {
         </div>
       </div>
     `).join('');
+
+    // Trigger 3D Render
+    initBench3D();
+    if (bench3D) bench3D.render();
   } catch (e) {
     $('#errB').innerHTML = `<div class="err">${esc(e.message)}</div>`;
   }
@@ -1159,12 +2051,16 @@ $('#runA').onclick = async () => {
       block: +$('#aB').value,
       causal: $('#aC').checked
     });
+    lastAttnData = d;
     $('#atab').classList.remove('hide');
     $('#atab tbody').innerHTML = Object.entries(d).map(([k, v]) => `<tr>
       <td style="font-weight:700;">${esc(k)}</td>
       <td style="font-family:'JetBrains Mono', monospace; font-weight:600;">${v.ms.toFixed(2)} ms</td>
       <td style="font-family:'JetBrains Mono', monospace; color:var(--text-muted);">${v.max_abs_err_vs_reference.toExponential(2)}</td>
     </tr>`).join('');
+
+    initAttn3D();
+    if (attn3D) attn3D.render();
   } catch (e) {
     $('#errA').innerHTML = `<div class="err">${esc(e.message)}</div>`;
   }
@@ -1230,6 +2126,9 @@ async function loadRes() {
           `</tbody>
         </table>
       </div>`;
+
+      // Mount 3D speedup landscape
+      setTimeout(() => initRes3D(bm), 100);
     }
 
     $('#resbox').innerHTML = h || '<div class="muted">No saved experiment files found in results/.</div>';
@@ -1237,6 +2136,13 @@ async function loadRes() {
     $('#resbox').textContent = e.message;
   }
 }
+
+// Window resize handler for all active 3D canvases
+window.addEventListener('resize', () => {
+  if (bench3D) bench3D.resize();
+  if (attn3D) attn3D.resize();
+  if (res3D) res3D.resize();
+});
 
 init().then(() => {
   if (location.hash === '#demo') {

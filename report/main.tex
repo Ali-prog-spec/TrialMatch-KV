@@ -14,11 +14,13 @@
 
 \title{TrialMatch-KV: Evidence-Grounded Clinical-Trial Criterion Matching with a LoRA-Fine-Tuned Qwen2.5 Transformer and Hand-Written KV-Cache, Tiled-Attention and Speculative-Decoding Inference}
 
-\author{\IEEEauthorblockN{[Student Name]}
-\IEEEauthorblockA{[Roll No.] -- Generative AI, Assignment \#2\\
-[Department, University]\\
-Email: m.alenauman@gmail.com\\
-Code: \url{https://github.com/Ali-prog-spec/TrialMatch-KV}}}
+\author{\IEEEauthorblockN{Muhammad Ali}
+\IEEEauthorblockA{\textit{Roll No.\ 23i-0008, Section B} \\
+\textit{Generative AI -- Assignment \#2} \\
+\textit{[Department, University]}\\
+[City, Country] \\
+m.alenauman@gmail.com \\
+Source code: \url{https://github.com/Ali-prog-spec/TrialMatch-KV}}}
 
 \maketitle
 
@@ -36,15 +38,15 @@ Matching patients to clinical trials requires reading free-text eligibility crit
 The assignment decomposes into six tasks, each answered in this paper: (1) research-driven model selection and fine-tuning; (2) criterion-level eligibility classification with evidence verification that keeps the dataset's label categories (including \emph{not enough information} and \emph{not applicable}); (3) a KV-cached decoding path with an uncached reference; (4) tiled online-softmax attention; (5) greedy speculative decoding; and (6) an integrated browser application. We deliberately report negative results (majority-class collapse on exclusion criteria, speculative-decoding slowdown, a slow tiled kernel) rather than hiding them.
 
 \section{Related Work}
-\textbf{Clinical-trial matching.} TrialGPT \cite{jin2024trialgpt} uses GPT-4 to produce criterion-level eligibility labels, supporting sentences and explanations, and aggregates them into trial scores; its released criterion annotations by clinicians are the benchmark used here. We study the repository only as a reference; all training, evaluation and inference code is our own, and the GPT-4 predictions contained in the dataset are never used as inputs.
+\textit{Clinical-trial matching.} TrialGPT \cite{jin2024trialgpt} uses GPT-4 to produce criterion-level eligibility labels, supporting sentences and explanations, and aggregates them into trial scores; its released criterion annotations by clinicians are the benchmark used here. We study the repository only as a reference; all training, evaluation and inference code is our own, and the GPT-4 predictions contained in the dataset are never used as inputs.
 
-\textbf{Parameter-efficient adaptation.} LoRA \cite{hu2022lora} freezes the base weights and learns low-rank updates $\Delta W = BA$, which fits our memory budget (a 1.5B model in fp16 needs 3.1\,GB; full fine-tuning with Adam states would not fit in 6\,GB).
+\textit{Parameter-efficient adaptation.} LoRA \cite{hu2022lora} freezes the base weights and learns low-rank updates $\Delta W = BA$, which fits our memory budget (a 1.5B model in fp16 needs 3.1\,GB; full fine-tuning with Adam states would not fit in 6\,GB).
 
-\textbf{Decoder architectures.} We use the Qwen2.5 family \cite{qwen25}: pre-norm decoder-only Transformers with rotary position embeddings (RoPE) \cite{su2021roformer}, grouped-query attention, SwiGLU feed-forward layers and RMSNorm \cite{vaswani2017attention} for the base design.
+\textit{Decoder architectures.} We use the Qwen2.5 family \cite{qwen25}: pre-norm decoder-only Transformers with rotary position embeddings (RoPE) \cite{su2021roformer}, grouped-query attention, SwiGLU feed-forward layers and RMSNorm \cite{vaswani2017attention} for the base design.
 
-\textbf{Efficient attention.} Online (streaming) softmax \cite{milakov2018online} computes softmax with a running maximum and normaliser; FlashAttention \cite{dao2022flashattention} combines it with tiling so the $T\times T$ score matrix is never materialised. KV caching and its memory management in serving systems are discussed in \cite{kwon2023pagedattention}.
+\textit{Efficient attention.} Online (streaming) softmax \cite{milakov2018online} computes softmax with a running maximum and normaliser; FlashAttention \cite{dao2022flashattention} combines it with tiling so the $T\times T$ score matrix is never materialised. KV caching and its memory management in serving systems are discussed in \cite{kwon2023pagedattention}.
 
-\textbf{Speculative decoding.} A small draft model proposes tokens that the large model verifies in one parallel pass \cite{leviathan2023speculative,chen2023accelerating}; under greedy decoding the output equals that of the target alone.
+\textit{Speculative decoding.} A small draft model proposes tokens that the large model verifies in one parallel pass \cite{leviathan2023speculative,chen2023accelerating}; under greedy decoding the output equals that of the target alone.
 
 \section{Materials and Methods}
 \subsection{Dataset and fixed split}

@@ -1,11 +1,11 @@
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Custom greedy speculative decoding vs. greedy KV decoding of the target (Qwen2.5-1.5B + LoRA; draft Qwen2.5-0.5B). Acc = draft acceptance rate; Tok/Fwd = tokens committed per target forward; speedup $<1$ is a slowdown.}
 \label{tab:spec}
 \footnotesize
 \begin{tabular}{rrlrrrrrrrrr}
 \toprule
-In & Out & k & Equal & Acc & Tok/Fwd & Greedy s & Spec s & Speedup & tok/s$_g$ & tok/s$_s$ & MB \\
+In & Out & k & Equal & Acc & Tok/Fwd & Greedy s & Spec s & Speedup & tok/s$_{greedy}$ & tok/s$_{spec}$ & MB \\
 \midrule
 316 & 32 & k=2 & yes & 0.64 & 2.29 & 1.84 & 2.48 & 0.74 & 17.4 & 12.9 & 4013 \\
 316 & 32 & k=4 & yes & 0.45 & 2.67 & 1.84 & 3.31 & 0.56 & 17.4 & 9.7 & 4013 \\
@@ -21,7 +21,7 @@ In & Out & k & Equal & Acc & Tok/Fwd & Greedy s & Spec s & Speedup & tok/s$_g$ &
 488 & 96 & k=6 & yes & 0.61 & 4.57 & 5.96 & 7.94 & 0.75 & 16.1 & 12.1 & 4070 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \begin{table}[t]
 \centering

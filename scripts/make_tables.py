@@ -8,12 +8,18 @@ L = lambda f: json.load(open(res / f))
 out = []
 
 
+WIDE = {"tab:cls", "tab:kv", "tab:spec"}      # full-width (table*) in the two-column IEEE layout
+TIGHT = {"tab:attn-perf", "tab:evidence"}     # single column, reduced font / column padding
+
+
 def tab(caption, label, header, rows, spec=None):
     spec = spec or "l" + "r" * (len(header) - 1)
-    s = ["\\begin{table}[t]", "\\centering", f"\\caption{{{caption}}}", f"\\label{{{label}}}", "\\footnotesize",
+    env = "table*" if label in WIDE else "table"
+    size = "\\footnotesize" if label in WIDE or label not in TIGHT else "\\scriptsize\n\\setlength{\\tabcolsep}{3pt}"
+    s = [f"\\begin{{{env}}}[t]", "\\centering", f"\\caption{{{caption}}}", f"\\label{{{label}}}", size,
          f"\\begin{{tabular}}{{{spec}}}", "\\toprule", " & ".join(header) + " \\\\", "\\midrule"]
     s += [" & ".join(str(c) for c in r) + " \\\\" for r in rows]
-    s += ["\\bottomrule", "\\end{tabular}", "\\end{table}", ""]
+    s += ["\\bottomrule", "\\end{tabular}", f"\\end{{{env}}}", ""]
     return "\n".join(s)
 
 
@@ -69,7 +75,7 @@ for r in b["speculative"]:
                      f"{v['tokens_per_target_forward']:.2f}", f"{r['greedy_kv']['total_s']:.2f}", f"{v['total_s']:.2f}", f"{v['speedup']:.2f}",
                      f"{r['greedy_kv']['tok_per_s']:.1f}", f"{v['tok_per_s']:.1f}", f"{v['peak_MB']:.0f}"])
 out.append(tab("Custom greedy speculative decoding vs. greedy KV decoding of the target (Qwen2.5-1.5B + LoRA; draft Qwen2.5-0.5B). Acc = draft acceptance rate; Tok/Fwd = tokens committed per target forward; speedup $<1$ is a slowdown.",
-               "tab:spec", ["In", "Out", "k", "Equal", "Acc", "Tok/Fwd", "Greedy s", "Spec s", "Speedup", "tok/s$_g$", "tok/s$_s$", "MB"], rows, "rrlrrrrrrrrr"))
+               "tab:spec", ["In", "Out", "k", "Equal", "Acc", "Tok/Fwd", "Greedy s", "Spec s", "Speedup", "tok/s$_{greedy}$", "tok/s$_{spec}$", "MB"], rows, "rrlrrrrrrrrr"))
 rows = []
 for r in b["speculative"]:
     h = r["hf_assisted"]

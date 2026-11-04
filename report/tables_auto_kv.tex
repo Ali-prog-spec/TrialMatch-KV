@@ -1,4 +1,4 @@
-\begin{table}[t]
+\begin{table*}[t]
 \centering
 \caption{Uncached reference vs. custom KV-cache greedy decoding (median of 3 timed runs after warm-up, CUDA-synchronised). Pre/Dec = prefill/decode seconds; peak memory includes the resident target and draft weights ($\approx$3.9\,GB).}
 \label{tab:kv}
@@ -18,4 +18,4 @@ In & Out & Equal & Pre$_0$ & Dec$_0$ & Pre$_{kv}$ & Dec$_{kv}$ & tok/s$_0$ & tok
 768 & 128 & yes & 3.52 & 543.81 & 3.56 & 10.59 & 0.2 & 9.0 & 4432 & 4167 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}

@@ -17,8 +17,7 @@
 \author{\IEEEauthorblockN{Muhammad Ali}
 \IEEEauthorblockA{\textit{Roll No.\ 23i-0008, Section B} \\
 \textit{Generative AI -- Assignment \#2} \\
-\textit{[Department, University]}\\
-[City, Country] \\
+\textit{[Department, University]}, [City, Country] \\
 m.alenauman@gmail.com \\
 Source code: \url{https://github.com/Ali-prog-spec/TrialMatch-KV}}}
 
@@ -201,7 +200,7 @@ Table~\ref{tab:spec} reports acceptance statistics, latency, throughput and memo
 \begin{itemize}
 \item The test split has only 8 patients and 206 criteria; many classes have 0--12 examples, so per-class metrics are very noisy and macro-F1 differences of a few points are not significant. We report a single training run (seed 42) without confidence intervals.
 \item Even the final v2 model is over-confident on exclusion criteria (25 of 28 insufficient-information cases called \emph{not excluded}) and never predicts \emph{excluded} (0 test support); accuracy mostly reflects label skew. Only one rebalancing scheme (square-root class sampling) was tried, and v1 was evaluated on the test split before v2 was designed (Sec.~V-A).
-\item Model candidates other than Qwen2.5-1.5B were not trained, so the model choice is feasibility-based, not empirically compared; hyper-parameters were not searched beyond the epoch count (selected by validation loss).
+\item Model candidates other than Qwen2.5-1.5B were not trained, so the model choice is feasibility-based, not empirically compared; hyper-parameters were not searched beyond the sampling scheme and the epoch count (selected by validation macro-F1 for v2, by validation loss for v1).
 \item The 547\,s uncached outlier is unexplained; timings come from a single laptop GPU with eager PyTorch, so ratios may differ on other hardware, and speculative decoding was never faster here.
 \item Explanations in the application are templated from the label and cited sentences rather than free-text reasoning; the system is an educational screening prototype and must not be used for enrollment decisions.
 \item Greedy equality between cached/speculative and uncached decoding was observed in fp16 on tested inputs; it is not guaranteed in general because of floating-point non-associativity.

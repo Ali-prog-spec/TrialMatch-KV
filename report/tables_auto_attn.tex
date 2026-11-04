@@ -19,7 +19,8 @@ fused SDPA & float16 & 12 & 1.95e-03 & 2.75e-05 & 12/12 \\
 \centering
 \caption{Attention runtime and peak extra memory (12 heads, d=64, causal, fp16, cuda).}
 \label{tab:attn-perf}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{lrrrrrr}
 \toprule
 T & Ref ms & Tiled ms & SDPA ms & Ref MB & Tiled MB & SDPA MB \\

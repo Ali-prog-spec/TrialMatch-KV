@@ -1,0 +1,348 @@
+[
+ {
+  "id": "g1",
+  "title": "Type 2 diabetes (facts stated in the note)",
+  "hint": "Model got 4/5 criteria right. Wrong: 'HbA1c above 7%': expected included, model said not enough information.",
+  "note": "0. A 54-year-old man presents for a routine diabetes follow-up.\n1. He was diagnosed with type 2 diabetes mellitus six years ago.\n2. He takes metformin 1000 mg twice daily.\n3. His HbA1c last month was 8.1%.\n4. He has no history of heart disease or kidney disease.\n5. He has never smoked.",
+  "criteria": "Inclusion criteria:\n- Adults aged 18 to 75 years\n- Diagnosis of type 2 diabetes mellitus\n- HbA1c above 7%\nExclusion criteria:\n- History of heart failure\n- Chronic kidney disease",
+  "expected": {
+   "Adults aged 18 to 75 years": "included",
+   "Diagnosis of type 2 diabetes mellitus": "included",
+   "HbA1c above 7%": "included",
+   "History of heart failure": "not excluded",
+   "Chronic kidney disease": "not excluded"
+  },
+  "observed": {
+   "Adults aged 18 to 75 years": {
+    "label": "included",
+    "cited": [
+     0
+    ]
+   },
+   "Diagnosis of type 2 diabetes mellitus": {
+    "label": "included",
+    "cited": [
+     1
+    ]
+   },
+   "HbA1c above 7%": {
+    "label": "not enough information",
+    "cited": [
+     3
+    ]
+   },
+   "History of heart failure": {
+    "label": "not excluded",
+    "cited": []
+   },
+   "Chronic kidney disease": {
+    "label": "not excluded",
+    "cited": [
+     4
+    ]
+   }
+  },
+  "matched": {
+   "Adults aged 18 to 75 years": true,
+   "Diagnosis of type 2 diabetes mellitus": true,
+   "HbA1c above 7%": false,
+   "History of heart failure": true,
+   "Chronic kidney disease": true
+  },
+  "category": "bad"
+ },
+ {
+  "id": "g2",
+  "title": "Asthma (facts stated in the note)",
+  "hint": "Model got 2/2 criteria right. All decisions match the expected labels.",
+  "note": "0. A 28-year-old woman presents with wheezing and shortness of breath.\n1. She has had asthma since childhood.\n2. She uses an albuterol inhaler about twice a week.\n3. She has never smoked.\n4. Her peak flow today is 78% of predicted.",
+  "criteria": "Inclusion criteria:\n- Physician-diagnosed asthma\nExclusion criteria:\n- Current smoker",
+  "expected": {
+   "Physician-diagnosed asthma": "included",
+   "Current smoker": "not excluded"
+  },
+  "observed": {
+   "Physician-diagnosed asthma": {
+    "label": "included",
+    "cited": [
+     1
+    ]
+   },
+   "Current smoker": {
+    "label": "not excluded",
+    "cited": [
+     3
+    ]
+   }
+  },
+  "matched": {
+   "Physician-diagnosed asthma": true,
+   "Current smoker": true
+  },
+  "category": "good"
+ },
+ {
+  "id": "g3",
+  "title": "Pneumonia inpatient (facts stated in the note)",
+  "hint": "Model got 3/4 criteria right. Wrong: 'Fever above 38 C': expected included, model said not enough information.",
+  "note": "0. A 72-year-old man is admitted with cough and fever.\n1. His temperature on arrival was 39.1 C.\n2. Chest X-ray shows a right lower lobe infiltrate.\n3. He has no known drug allergies.\n4. He lives independently.",
+  "criteria": "Inclusion criteria:\n- Age over 65 years\n- Fever above 38 C\n- Radiographic evidence of pneumonia\nExclusion criteria:\n- Known allergy to penicillin",
+  "expected": {
+   "Age over 65 years": "included",
+   "Fever above 38 C": "included",
+   "Radiographic evidence of pneumonia": "included",
+   "Known allergy to penicillin": "not excluded"
+  },
+  "observed": {
+   "Age over 65 years": {
+    "label": "included",
+    "cited": [
+     0
+    ]
+   },
+   "Fever above 38 C": {
+    "label": "not enough information",
+    "cited": [
+     0,
+     1
+    ]
+   },
+   "Radiographic evidence of pneumonia": {
+    "label": "included",
+    "cited": [
+     0,
+     2
+    ]
+   },
+   "Known allergy to penicillin": {
+    "label": "not excluded",
+    "cited": [
+     3
+    ]
+   }
+  },
+  "matched": {
+   "Age over 65 years": true,
+   "Fever above 38 C": false,
+   "Radiographic evidence of pneumonia": true,
+   "Known allergy to penicillin": true
+  },
+  "category": "bad"
+ },
+ {
+  "id": "g4",
+  "title": "Heart failure (facts stated in the note)",
+  "hint": "Model got 2/3 criteria right. Wrong: 'Left ventricular ejection fraction below 40%': expected included, model said not included.",
+  "note": "0. A 63-year-old woman is seen in the heart failure clinic.\n1. She was diagnosed with heart failure two years ago.\n2. Her most recent echocardiogram showed an ejection fraction of 30%.\n3. She has no history of cancer.\n4. She takes furosemide and carvedilol.",
+  "criteria": "Inclusion criteria:\n- Diagnosis of heart failure\n- Left ventricular ejection fraction below 40%\nExclusion criteria:\n- Active cancer",
+  "expected": {
+   "Diagnosis of heart failure": "included",
+   "Left ventricular ejection fraction below 40%": "included",
+   "Active cancer": "not excluded"
+  },
+  "observed": {
+   "Diagnosis of heart failure": {
+    "label": "included",
+    "cited": [
+     0,
+     1
+    ]
+   },
+   "Left ventricular ejection fraction below 40%": {
+    "label": "not included",
+    "cited": [
+     2
+    ]
+   },
+   "Active cancer": {
+    "label": "not excluded",
+    "cited": [
+     3
+    ]
+   }
+  },
+  "matched": {
+   "Diagnosis of heart failure": true,
+   "Left ventricular ejection fraction below 40%": false,
+   "Active cancer": true
+  },
+  "category": "bad"
+ },
+ {
+  "id": "g5",
+  "title": "Knee pain (information missing in the note)",
+  "hint": "Model got 2/2 criteria right. All decisions match the expected labels.",
+  "note": "0. A 47-year-old woman presents with knee pain.\n1. The pain started three months ago and worsens when climbing stairs.\n2. Examination shows mild swelling of the right knee.\n3. She takes ibuprofen as needed.",
+  "criteria": "Inclusion criteria:\n- Knee osteoarthritis confirmed by X-ray\n- Body mass index above 30",
+  "expected": {
+   "Knee osteoarthritis confirmed by X-ray": "not enough information",
+   "Body mass index above 30": "not enough information"
+  },
+  "observed": {
+   "Knee osteoarthritis confirmed by X-ray": {
+    "label": "not enough information",
+    "cited": [
+     0,
+     1,
+     2
+    ]
+   },
+   "Body mass index above 30": {
+    "label": "not enough information",
+    "cited": []
+   }
+  },
+  "matched": {
+   "Knee osteoarthritis confirmed by X-ray": true,
+   "Body mass index above 30": true
+  },
+  "category": "good"
+ },
+ {
+  "id": "b1",
+  "title": "Pregnancy criterion for a male patient",
+  "hint": "Model got 1/2 criteria right. Wrong: 'Pregnancy': expected not applicable, model said not excluded.",
+  "note": "0. A 40-year-old man presents with chronic low back pain.\n1. The pain has lasted for eight months.\n2. He works as a delivery driver.\n3. He takes naproxen when needed.",
+  "criteria": "Inclusion criteria:\n- Chronic low back pain for more than 3 months\nExclusion criteria:\n- Pregnancy",
+  "expected": {
+   "Chronic low back pain for more than 3 months": "included",
+   "Pregnancy": "not applicable"
+  },
+  "observed": {
+   "Chronic low back pain for more than 3 months": {
+    "label": "included",
+    "cited": [
+     0,
+     1
+    ]
+   },
+   "Pregnancy": {
+    "label": "not excluded",
+    "cited": []
+   }
+  },
+  "matched": {
+   "Chronic low back pain for more than 3 months": true,
+   "Pregnancy": false
+  },
+  "category": "bad"
+ },
+ {
+  "id": "b2",
+  "title": "Exclusion facts never mentioned in the note",
+  "hint": "Model got 0/2 criteria right. Wrong: 'Received any vaccine within the last 4 weeks': expected not enough information, model said not excluded; 'Treatment with a monoclonal antibody in the last 6 months': expected not enough information, model said not excluded.",
+  "note": "0. A 35-year-old man presents with recurrent migraine headaches.\n1. Episodes occur about three times a month.\n2. He has tried over-the-counter analgesics without relief.\n3. He has no other medical problems.",
+  "criteria": "Exclusion criteria:\n- Received any vaccine within the last 4 weeks\n- Treatment with a monoclonal antibody in the last 6 months",
+  "expected": {
+   "Received any vaccine within the last 4 weeks": "not enough information",
+   "Treatment with a monoclonal antibody in the last 6 months": "not enough information"
+  },
+  "observed": {
+   "Received any vaccine within the last 4 weeks": {
+    "label": "not excluded",
+    "cited": []
+   },
+   "Treatment with a monoclonal antibody in the last 6 months": {
+    "label": "not excluded",
+    "cited": []
+   }
+  },
+  "matched": {
+   "Received any vaccine within the last 4 weeks": false,
+   "Treatment with a monoclonal antibody in the last 6 months": false
+  },
+  "category": "bad"
+ },
+ {
+  "id": "b3",
+  "title": "Anticoagulant exclusion that applies",
+  "hint": "Model got 2/2 criteria right. All decisions match the expected labels.",
+  "note": "0. A 70-year-old man has atrial fibrillation.\n1. He has been taking warfarin daily for three years.\n2. His INR is well controlled.\n3. He also has hypertension treated with amlodipine.",
+  "criteria": "Inclusion criteria:\n- Diagnosis of atrial fibrillation\nExclusion criteria:\n- Current use of anticoagulant medication",
+  "expected": {
+   "Diagnosis of atrial fibrillation": "included",
+   "Current use of anticoagulant medication": "excluded"
+  },
+  "observed": {
+   "Diagnosis of atrial fibrillation": {
+    "label": "included",
+    "cited": [
+     0
+    ]
+   },
+   "Current use of anticoagulant medication": {
+    "label": "excluded",
+    "cited": [
+     0
+    ]
+   }
+  },
+  "matched": {
+   "Diagnosis of atrial fibrillation": true,
+   "Current use of anticoagulant medication": true
+  },
+  "category": "good"
+ },
+ {
+  "id": "b4",
+  "title": "Inclusion criteria clearly not met",
+  "hint": "Model got 2/2 criteria right. All decisions match the expected labels.",
+  "note": "0. A 22-year-old woman presents for a sports physical.\n1. She has no chronic medical conditions.\n2. Her fasting glucose was normal.\n3. She has no history of diabetes.",
+  "criteria": "Inclusion criteria:\n- Diagnosis of type 2 diabetes mellitus\n- Currently taking insulin",
+  "expected": {
+   "Diagnosis of type 2 diabetes mellitus": "not included",
+   "Currently taking insulin": "not included"
+  },
+  "observed": {
+   "Diagnosis of type 2 diabetes mellitus": {
+    "label": "not included",
+    "cited": [
+     1,
+     2,
+     3
+    ]
+   },
+   "Currently taking insulin": {
+    "label": "not included",
+    "cited": []
+   }
+  },
+  "matched": {
+   "Diagnosis of type 2 diabetes mellitus": true,
+   "Currently taking insulin": true
+  },
+  "category": "good"
+ },
+ {
+  "id": "i1",
+  "title": "Empty patient note",
+  "hint": "Click 'Run screening': the app should show a clear 'Patient note is empty' error instead of crashing.",
+  "note": "",
+  "criteria": "Inclusion criteria:\n- Diagnosis of type 2 diabetes mellitus",
+  "category": "invalid"
+ },
+ {
+  "id": "i2",
+  "title": "No criteria entered",
+  "hint": "Click 'Run screening': the app should explain that no criteria were found.",
+  "note": "0. A 54-year-old man has type 2 diabetes.\n1. He takes metformin.",
+  "criteria": "",
+  "category": "invalid"
+ },
+ {
+  "id": "i3",
+  "title": "Over-long patient note (> 6000 characters)",
+  "hint": "Click 'Run screening': the app should reject the note as too long.",
+  "note": "0. The patient reports a stable daily routine and takes medication as prescribed.\n1. The patient reports a stable daily routine and takes medication as prescribed.\n2. The patient reports a stable daily routine and takes medication as prescribed.\n3. The patient reports a stable daily routine and takes medication as prescribed.\n4. The patient reports a stable daily routine and takes medication as prescribed.\n5. The patient reports a stable daily routine and takes medication as prescribed.\n6. The patient reports a stable daily routine and takes medication as prescribed.\n7. The patient reports a stable daily routine and takes medication as prescribed.\n8. The patient reports a stable daily routine and takes medication as prescribed.\n9. The patient reports a stable daily routine and takes medication as prescribed.\n10. The patient reports a stable daily routine and takes medication as prescribed.\n11. The patient reports a stable daily routine and takes medication as prescribed.\n12. The patient reports a stable daily routine and takes medication as prescribed.\n13. The patient reports a stable daily routine and takes medication as prescribed.\n14. The patient reports a stable daily routine and takes medication as prescribed.\n15. The patient reports a stable daily routine and takes medication as prescribed.\n16. The patient reports a stable daily routine and takes medication as prescribed.\n17. The patient reports a stable daily routine and takes medication as prescribed.\n18. The patient reports a stable daily routine and takes medication as prescribed.\n19. The patient reports a stable daily routine and takes medication as prescribed.\n20. The patient reports a stable daily routine and takes medication as prescribed.\n21. The patient reports a stable daily routine and takes medication as prescribed.\n22. The patient reports a stable daily routine and takes medication as prescribed.\n23. The patient reports a stable daily routine and takes medication as prescribed.\n24. The patient reports a stable daily routine and takes medication as prescribed.\n25. The patient reports a stable daily routine and takes medication as prescribed.\n26. The patient reports a stable daily routine and takes medication as prescribed.\n27. The patient reports a stable daily routine and takes medication as prescribed.\n28. The patient reports a stable daily routine and takes medication as prescribed.\n29. The patient reports a stable daily routine and takes medication as prescribed.\n30. The patient reports a stable daily routine and takes medication as prescribed.\n31. The patient reports a stable daily routine and takes medication as prescribed.\n32. The patient reports a stable daily routine and takes medication as prescribed.\n33. The patient reports a stable daily routine and takes medication as prescribed.\n34. The patient reports a stable daily routine and takes medication as prescribed.\n35. The patient reports a stable daily routine and takes medication as prescribed.\n36. The patient reports a stable daily routine and takes medication as prescribed.\n37. The patient reports a stable daily routine and takes medication as prescribed.\n38. The patient reports a stable daily routine and takes medication as prescribed.\n39. The patient reports a stable daily routine and takes medication as prescribed.\n40. The patient reports a stable daily routine and takes medication as prescribed.\n41. The patient reports a stable daily routine and takes medication as prescribed.\n42. The patient reports a stable daily routine and takes medication as prescribed.\n43. The patient reports a stable daily routine and takes medication as prescribed.\n44. The patient reports a stable daily routine and takes medication as prescribed.\n45. The patient reports a stable daily routine and takes medication as prescribed.\n46. The patient reports a stable daily routine and takes medication as prescribed.\n47. The patient reports a stable daily routine and takes medication as prescribed.\n48. The patient reports a stable daily routine and takes medication as prescribed.\n49. The patient reports a stable daily routine and takes medication as prescribed.\n50. The patient reports a stable daily routine and takes medication as prescribed.\n51. The patient reports a stable daily routine and takes medication as prescribed.\n52. The patient reports a stable daily routine and takes medication as prescribed.\n53. The patient reports a stable daily routine and takes medication as prescribed.\n54. The patient reports a stable daily routine and takes medication as prescribed.\n55. The patient reports a stable daily routine and takes medication as prescribed.\n56. The patient reports a stable daily routine and takes medication as prescribed.\n57. The patient reports a stable daily routine and takes medication as prescribed.\n58. The patient reports a stable daily routine and takes medication as prescribed.\n59. The patient reports a stable daily routine and takes medication as prescribed.\n60. The patient reports a stable daily routine and takes medication as prescribed.\n61. The patient reports a stable daily routine and takes medication as prescribed.\n62. The patient reports a stable daily routine and takes medication as prescribed.\n63. The patient reports a stable daily routine and takes medication as prescribed.\n64. The patient reports a stable daily routine and takes medication as prescribed.\n65. The patient reports a stable daily routine and takes medication as prescribed.\n66. The patient reports a stable daily routine and takes medication as prescribed.\n67. The patient reports a stable daily routine and takes medication as prescribed.\n68. The patient reports a stable daily routine and takes medication as prescribed.\n69. The patient reports a stable daily routine and takes medication as prescribed.\n70. The patient reports a stable daily routine and takes medication as prescribed.\n71. The patient reports a stable daily routine and takes medication as prescribed.\n72. The patient reports a stable daily routine and takes medication as prescribed.\n73. The patient reports a stable daily routine and takes medication as prescribed.\n74. The patient reports a stable daily routine and takes medication as prescribed.\n75. The patient reports a stable daily routine and takes medication as prescribed.\n76. The patient reports a stable daily routine and takes medication as prescribed.\n77. The patient reports a stable daily routine and takes medication as prescribed.\n78. The patient reports a stable daily routine and takes medication as prescribed.\n79. The patient reports a stable daily routine and takes medication as prescribed.",
+  "criteria": "Inclusion criteria:\n- Diagnosis of type 2 diabetes mellitus",
+  "category": "invalid"
+ },
+ {
+  "id": "i4",
+  "title": "Too many criteria (> 40)",
+  "hint": "Click 'Run screening': the app should reject the request because of too many criteria.",
+  "note": "0. A 54-year-old man has type 2 diabetes.\n1. He takes metformin.",
+  "criteria": "Inclusion criteria:\n- Placeholder criterion number 0\n- Placeholder criterion number 1\n- Placeholder criterion number 2\n- Placeholder criterion number 3\n- Placeholder criterion number 4\n- Placeholder criterion number 5\n- Placeholder criterion number 6\n- Placeholder criterion number 7\n- Placeholder criterion number 8\n- Placeholder criterion number 9\n- Placeholder criterion number 10\n- Placeholder criterion number 11\n- Placeholder criterion number 12\n- Placeholder criterion number 13\n- Placeholder criterion number 14\n- Placeholder criterion number 15\n- Placeholder criterion number 16\n- Placeholder criterion number 17\n- Placeholder criterion number 18\n- Placeholder criterion number 19\n- Placeholder criterion number 20\n- Placeholder criterion number 21\n- Placeholder criterion number 22\n- Placeholder criterion number 23\n- Placeholder criterion number 24\n- Placeholder criterion number 25\n- Placeholder criterion number 26\n- Placeholder criterion number 27\n- Placeholder criterion number 28\n- Placeholder criterion number 29\n- Placeholder criterion number 30\n- Placeholder criterion number 31\n- Placeholder criterion number 32\n- Placeholder criterion number 33\n- Placeholder criterion number 34\n- Placeholder criterion number 35\n- Placeholder criterion number 36\n- Placeholder criterion number 37\n- Placeholder criterion number 38\n- Placeholder criterion number 39\n- Placeholder criterion number 40\n- Placeholder criterion number 41\n- Placeholder criterion number 42\n- Placeholder criterion number 43\n- Placeholder criterion number 44",
+  "category": "invalid"
+ }
+]

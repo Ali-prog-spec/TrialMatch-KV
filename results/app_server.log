@@ -5,9 +5,18 @@ C:\Users\KENKINIKI\Desktop\New folder (2)\app\server.py:38: DeprecationWarning:
         [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
         
   @app.on_event("startup")
-INFO:     Started server process [12108]
+INFO:     Started server process [24992]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<04:04,  1.38it/s]Loading weights:  51%|#####     | 171/338 [00:00<00:00, 280.18it/s]Loading weights:  80%|#######9  | 270/338 [00:01<00:00, 270.15it/s]Loading weights:  99%|#########9| 336/338 [00:01<00:00, 258.61it/s]Loading weights: 100%|##########| 338/338 [00:01<00:00, 226.81it/s]
+W1105 01:14:06.478000 24992 torch\utils\flop_counter.py:29] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/290 [00:00<?, ?it/s]Loading weights:   0%|          | 1/290 [00:00<01:44,  2.75it/s]Loading weights:  26%|##6       | 76/290 [00:00<00:01, 193.72it/s]Loading weights:  96%|#########6| 279/290 [00:00<00:00, 671.31it/s]Loading weights: 100%|##########| 290/290 [00:00<00:00, 476.15it/s]
+INFO:     127.0.0.1:54688 - "GET /api/samples HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54689 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54690 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54691 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:54692 - "POST /api/screen HTTP/1.1" 400 Bad Request
+INFO:     127.0.0.1:63594 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54457 - "GET /api/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54457 - "GET /api/samples HTTP/1.1" 200 OK

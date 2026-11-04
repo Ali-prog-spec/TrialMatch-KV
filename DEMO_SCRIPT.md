@@ -52,6 +52,14 @@
 ## 5:40-6:30  Results and limitations (show the report's results table or the saved experiments tab)
 "On the held-out test set of 8 patients and 206 criteria, the base model gets 22 percent accuracy. After fine-tuning, accuracy is 72 percent and macro-F1 is 0.49, with evidence F1 of 0.54. My first model always answered not excluded for exclusion criteria, so I retrained with class-balanced sampling, choosing the epoch on validation data only. The model is still over-confident when information is missing, and the test set is small. All code, the split manifest, logs and the adapter are on GitHub, linked in the report. Thank you."
 
+## Demo sample dropdown (tags are generated from real model runs)
+The "Load Demo Sample" dropdown is grouped and each case shows a coloured tag plus a one-line hint:
+- **GOOD DATA** (model right on every criterion): `Asthma`, `Knee pain (information missing)` (correctly says not enough information), `Anticoagulant exclusion that applies`, `Inclusion criteria clearly not met`.
+- **BAD DATA** (model wrong on at least one criterion): `Pregnancy criterion for a male patient`, `Exclusion facts never mentioned`, plus `Type 2 diabetes`, `Pneumonia inpatient`, `Heart failure` (one wrong criterion each). Good for the "honest limitations" moment.
+- **INVALID INPUT** (error handling): `Empty patient note`, `No criteria entered`, `Over-long patient note`, `Too many criteria`. Click Run screening and show the error message.
+- **Real validation-split patients** from the dataset.
+Rebuild the tags after any model change with `python scripts/build_demo_samples.py` (needs the GPU free).
+
 ## Tips
 - Speak slowly; ~130 words per minute fits the time.
 - If a run takes long, say "this takes a few seconds on my laptop GPU" and keep talking.

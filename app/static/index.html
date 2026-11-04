@@ -431,6 +431,27 @@
       min-width: 240px;
     }
 
+    .sample-hint {
+      margin-top: 10px;
+      font-size: 13px;
+      line-height: 1.45;
+      min-height: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 12px;
+      margin-right: 8px;
+      letter-spacing: .02em;
+    }
+    .tag-good { background: #d1fadf; color: #157f3b; }
+    .tag-bad { background: #fee4e2; color: #b42318; }
+    .tag-invalid { background: #fef0c7; color: #b54708; }
+    .tag-validation { background: #e5e7eb; color: #444; }
+
     /* Screening Run Controls */
     .controls-row {
       display: flex;
@@ -740,7 +761,7 @@
       <div class="card-header-bar">
         <div class="card-title">
           <svg class="card-title-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-          Load Validation Sample
+          Load Demo Sample
         </div>
         <button class="sec" id="clearB" style="padding: 5px 12px; font-size: 12.5px;">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -754,6 +775,7 @@
           Load Patient Note &amp; Criteria
         </button>
       </div>
+      <div id="sampleHint" class="sample-hint"></div>
     </div>
 
     <div class="grid">
@@ -973,15 +995,36 @@ async function init() {
 
   try {
     samples = await api('/api/samples');
-    $('#sample').innerHTML = samples.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('');
+    const groups = [
+      ['good', 'GOOD DATA - model decides correctly (synthetic)'],
+      ['bad', 'BAD DATA - model gets something wrong (synthetic)'],
+      ['invalid', 'INVALID INPUT - shows error handling'],
+      ['validation', 'Real validation-split patients'],
+    ];
+    $('#sample').innerHTML = groups.map(([cat, label]) => {
+      const opts = samples.map((s, i) => [s, i]).filter(([s]) => s.category === cat)
+        .map(([s, i]) => `<option value="${i}">[${cat.toUpperCase()}] ${esc(s.name)}</option>`).join('');
+      return opts ? `<optgroup label="${label}">${opts}</optgroup>` : '';
+    }).join('');
+    showHint();
   } catch (e) {}
 }
+
+const TAGS = { good: 'GOOD DATA', bad: 'BAD DATA', invalid: 'INVALID INPUT', validation: 'REAL PATIENT' };
+function showHint() {
+  const s = samples[$('#sample').value];
+  $('#sampleHint').innerHTML = s
+    ? `<span class="tag tag-${esc(s.category)}">${TAGS[s.category] || ''}</span>${esc(s.hint || '')}`
+    : '';
+}
+$('#sample').onchange = showHint;
 
 $('#loadS').onclick = () => {
   const s = samples[$('#sample').value];
   if (s) {
     $('#note').value = s.note;
     $('#crit').value = s.criteria;
+    showHint();
   }
 };
 

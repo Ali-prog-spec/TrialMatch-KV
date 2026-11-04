@@ -165,9 +165,14 @@ def status():
 
 @app.get("/api/samples")
 def samples():
-    """Demo patients from the VALIDATION split (test split is never exposed)."""
+    """Synthetic demo cases (tagged good / bad / invalid by scripts/build_demo_samples.py) followed by real
+    patients from the VALIDATION split (the test split is never exposed)."""
     df = get_split("val")
-    out = []
+    demo_out, val_out = [], []
+    demo = Path(__file__).parent / "demo_samples.json"
+    if demo.exists():
+        for s in json.loads(demo.read_text(encoding="utf-8")):
+            demo_out.append(dict(name=s["title"], note=s["note"], criteria=s["criteria"], category=s["category"], hint=s.get("hint", "")))
     for pid, g in df.groupby("patient_id"):
         crit = {"inclusion": [], "exclusion": []}
         for _, r in g.iterrows():
@@ -179,8 +184,9 @@ def samples():
             items = [r.criterion_text for _, r in gg.iterrows() if r.criterion_type == t]
             if items:
                 txt += f"{t.capitalize()} criteria:\n" + "\n".join("- " + i for i in items) + "\n"
-        out.append(dict(name=f"{pid} / {trial}", note=g.note.iloc[0], criteria=txt.strip()))
-    return out[:8]
+        val_out.append(dict(name=f"{pid} / {trial}", note=g.note.iloc[0], criteria=txt.strip(), category="validation",
+                            hint="Real patient from the validation split; expert labels exist in the dataset."))
+    return demo_out + val_out[:8]
 
 
 @app.post("/api/screen")

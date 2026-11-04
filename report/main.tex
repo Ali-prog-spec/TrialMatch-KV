@@ -105,17 +105,17 @@ The draft is Qwen2.5-0.5B-Instruct (494M parameters, 24 layers), which shares th
 \subsection{Application (Task 6)}
 A FastAPI server loads the merged fine-tuned model and the draft once, and serves a single-page browser UI (Fig.~\ref{fig:app}): the user pastes a note (numbered or free text), pastes or loads criteria under ``Inclusion/Exclusion criteria'' headers, chooses a decoding mode (no cache / KV cache / speculative) and obtains, per criterion, the label, the cited sentence IDs with their exact text, an explanation templated only from the label and cited sentences, a missing-information flag and the rule-based overall outcome. A report (HTML, with provenance: model, adapter, decoding mode, timestamp) and JSON can be downloaded. Empty notes, over-long input, missing criteria and invalid parameters return explicit error messages. A live ``Inference comparison'' tab runs all three decoders on the user's first criterion and shows prefill/decode times, tokens/s, peak memory, acceptance rate and token equality; an ``Attention lab'' compares the three attention implementations. Demo samples come from the \emph{validation} split only. A prominent banner states that this is an educational prototype, not a clinical enrollment decision.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{app_screening.png}
+\includegraphics[width=0.92\textwidth]{app_screening.png}
 \caption{Screening tab: sample patient from the validation split, per-criterion decisions with exact supporting sentences, explanation, missing-information flags and overall preliminary outcome.}\label{fig:app}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{app_bench.png}
+\includegraphics[width=0.92\textwidth]{app_bench.png}
 \caption{Inference-comparison tab: live run of the three decoders on a real prompt (316 prompt tokens). Outputs are token-identical.}\label{fig:appbench}
-\end{figure}
+\end{figure*}
 
 \section{Experimental Setup and Metrics}
 Hardware: NVIDIA GeForce RTX 2060 (6\,GB, laptop-class, WDDM driver), 12-thread CPU, Windows 11, PyTorch 2.11 (CUDA 12.8), Transformers 5.6, PEFT 0.21. All inference is fp16 with greedy decoding and at most 64 new tokens for classification; benchmarks use fixed output lengths with the end-of-sequence token ignored in \emph{all} methods so they emit the same number of tokens. Timing uses one warm-up run, then the median of three CUDA-synchronised runs; peak memory is \texttt{torch.cuda.max\_memory\_allocated}. Because the 0.5B draft remains resident, \emph{peak memory in all rows includes both models}. Classification uses accuracy, macro-F1, per-class precision/recall/F1 and confusion matrices overall and separately per criterion type; macro-F1 averages over all classes of the label set (a class with no support and no correct prediction contributes 0). Evidence metrics are described in Sec.~III-D.

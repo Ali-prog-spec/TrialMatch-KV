@@ -18,6 +18,8 @@ p.add_argument("--dropout", type=float, default=0.05)
 p.add_argument("--accum", type=int, default=8)
 p.add_argument("--max_len", type=int, default=1024)
 p.add_argument("--seed", type=int, default=42)
+p.add_argument("--balance", default="none", choices=["none", "sqrt", "inv"], help="oversample rare (type,label) classes")
+p.add_argument("--save_every_epoch", action="store_true")
 p.add_argument("--out", default="checkpoints/lora_best")
 p.add_argument("--log", default="results/train_log.json")
 a = p.parse_args()
@@ -78,13 +80,20 @@ def val_loss():
     return float(np.mean(t))
 
 
+probs = None
+if a.balance != "none":
+    keys = [f"{r.criterion_type}|{r.expert_eligibility}" for _, r in tr.iterrows()]
+    cnt = {k: keys.count(k) for k in set(keys)}
+    w = np.array([cnt[k] ** (-0.5 if a.balance == "sqrt" else -1.0) for k in keys])
+    probs = w / w.sum()
+    print("class counts", cnt)
 log = dict(config=vars(a), truncation=trunc_info, steps=[], epochs=[])
 best = 1e9
 step = 0
 model.train()
 t0 = time.time()
 for ep in range(a.epochs):
-    order = np.random.permutation(len(enc_tr))
+    order = np.random.choice(len(enc_tr), size=len(enc_tr), replace=True, p=probs) if probs is not None else np.random.permutation(len(enc_tr))
     run = []
     for i, idx in enumerate(order):
         l = loss_of(enc_tr[idx])
@@ -106,5 +115,7 @@ for ep in range(a.epochs):
         best = vl
         model.save_pretrained(ROOT / a.out)
         log["best_epoch"] = ep + 1
+    if a.save_every_epoch:
+        model.save_pretrained(ROOT / (a.out + f"_ep{ep + 1}"))
     Path(ROOT / a.log).write_text(json.dumps(log, indent=1))
 print("done, best val loss", best)

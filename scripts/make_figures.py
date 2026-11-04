@@ -14,7 +14,7 @@ fig.mkdir(parents=True, exist_ok=True)
 plt.rcParams.update({"font.size": 8, "figure.dpi": 200})
 
 # --- training curves
-log = json.load(open(res / "train_log.json"))
+log = json.load(open(res / "train_log_bal.json"))
 s = log["steps"]
 plt.figure(figsize=(3.4, 2.3))
 plt.plot([x["step"] for x in s], [x["train_loss"] for x in s], label="train (per optimizer step)", alpha=.7)

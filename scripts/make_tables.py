@@ -23,7 +23,7 @@ esc = lambda t: t.replace("_", "\\_")
 # ---- before/after, val + test
 rows = []
 for split in ("val", "test"):
-    for tag, name in (("base", "Base (zero-shot)"), ("finetuned", "Fine-tuned")):
+    for tag, name in (("base", "Base (zero-shot)"), ("v1", "v1: LoRA, loss-selected"), ("finetuned", "v2: LoRA, balanced, F1-selected")):
         m = L(f"metrics_{split}_{tag}.json")
         o, i, e = m["overall"], m["inclusion"], m["exclusion"]
         rows.append([split, name, f3(o["accuracy"]), f3(o["macro_f1"]), f3(i["accuracy"]), f3(i["macro_f1"]), f3(e["accuracy"]), f3(e["macro_f1"])])
@@ -36,13 +36,13 @@ rows = []
 for g in ("inclusion", "exclusion"):
     for lab, v in m[g]["per_class"].items():
         rows.append([g, lab, f3(v["precision"]), f3(v["recall"]), f3(v["f1"]), v["support"]])
-out.append(tab("Per-class precision/recall/F1 of the fine-tuned model on the held-out test split.", "tab:perclass",
+out.append(tab("Per-class precision/recall/F1 of the final (v2) model on the held-out test split.", "tab:perclass",
                ["Group", "Class", "P", "R", "F1", "Support"], rows, "llrrrr"))
 
 # ---- evidence
 rows = []
 for split in ("val", "test"):
-    for tag, name in (("base", "Base"), ("finetuned", "Fine-tuned")):
+    for tag, name in (("base", "Base"), ("v1", "v1"), ("finetuned", "v2")):
         m = L(f"metrics_{split}_{tag}.json")
         for g in ("overall", "inclusion", "exclusion"):
             e = m[g]["evidence"]
@@ -98,9 +98,12 @@ out.append(tab(f"Attention runtime and peak extra memory (12 heads, d=64, causal
                ["T", "Ref ms", "Tiled ms", "SDPA ms", "Ref MB", "Tiled MB", "SDPA MB"], rows))
 
 # ---- training
-t = L("train_log.json")
-rows = [[e["epoch"], f"{e['train_loss']:.4f}", f"{e['val_loss']:.4f}", f"{e['elapsed_s'] / 60:.0f}"] for e in t["epochs"]]
-out.append(tab(f"LoRA training log (best epoch = {t['best_epoch']}, saved by validation loss).", "tab:train", ["Epoch", "Train loss", "Val loss", "Elapsed min"], rows))
+t = L("train_log_bal.json")
+rows = []
+for e in t["epochs"]:
+    vm = L(f"metrics_val_bal_ep{e['epoch']}.json")["overall"]
+    rows.append([e["epoch"], f"{e['train_loss']:.4f}", f"{e['val_loss']:.4f}", f3(vm["accuracy"]), f3(vm["macro_f1"]), f3(vm["evidence"]["micro"]["f1"]), f"{e['elapsed_s'] / 60:.0f}"])
+out.append(tab("v2 training log (balanced sampling, 4 epochs). Validation accuracy, macro-F1 and evidence micro-F1 come from generation on the validation split; epoch 3 has the best validation macro-F1 and is the final adapter.", "tab:train", ["Epoch", "Train loss", "Val loss", "Val Acc", "Val mF1", "Val Ev-F1", "Min"], rows, "rrrrrrr"))
 
 names = ["cls", "perclass", "evidence", "kv", "spec", "spec", "attn", "attn", "train"]
 groups = {}

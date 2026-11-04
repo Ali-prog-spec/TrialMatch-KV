@@ -1,22 +1,23 @@
 # Error analysis (held-out test, fine-tuned model)
 
-57 of 206 criterion predictions wrong.
+58 of 206 criterion predictions wrong.
 
 | kind                                                  |   count |
 |:------------------------------------------------------|--------:|
-| unsupported eligibility (missing info treated as met) |      32 |
-| missed not-applicable                                 |      15 |
-| over-abstention (info present)                        |       8 |
-| contradiction / wrong polarity                        |       2 |
+| unsupported eligibility (missing info treated as met) |      25 |
+| over-abstention (info present)                        |      13 |
+| missed not-applicable                                 |      10 |
+| contradiction / wrong polarity                        |      10 |
 
-- **[contradiction / wrong polarity]** ann 164 (inclusion) criterion: "Patients undergoing surgical lower limb revascularisation (suprainguinal or infrainguinal)" -> gold *not included* [], predicted *included* [0, 1, 2]
-- **[contradiction / wrong polarity]** ann 163 (inclusion) criterion: "Patients undergoing endovascular abdominal aneurysm repair" -> gold *not included* [], predicted *included* [0, 1, 2]
-- **[missed not-applicable]** ann 422 (inclusion) criterion: "If female, using birth control" -> gold *not applicable* [3], predicted *not enough information* [3]
-- **[missed not-applicable]** ann 750 (exclusion) criterion: "pregnancy" -> gold *not applicable* [], predicted *not excluded* []
-- **[missed not-applicable]** ann 754 (exclusion) criterion: "alcoholism (drunk at least once a week)" -> gold *not applicable* [], predicted *not excluded* []
-- **[over-abstention (info present)]** ann 188 (inclusion) criterion: "The use of vasopressors to maintain a systolic blood pressure of at least 90mmHg despite fluid resuscitation, low dose of dopamine (≤ 5 μg/k" -> gold *not included* [3], predicted *not enough information* []
-- **[over-abstention (info present)]** ann 176 (inclusion) criterion: "No medical history of central vena catheterization." -> gold *included* [0], predicted *not enough information* []
-- **[over-abstention (info present)]** ann 162 (inclusion) criterion: "Patients undergoing open abdominal aortic aneurysm repair" -> gold *not included* [], predicted *not enough information* []
-- **[unsupported eligibility (missing info treated as met)]** ann 395 (exclusion) criterion: "Potent inhibitors or inducers of CYP3A4 intravenously or orally within 14 days prior to first dose of study medication." -> gold *not enough information* [], predicted *not excluded* []
-- **[unsupported eligibility (missing info treated as met)]** ann 411 (exclusion) criterion: "Patients likely to receive oral or intravenous steroids or immunosuppressant for other non-SLE condition during the study duration, as this " -> gold *not enough information* [], predicted *not excluded* []
-- **[unsupported eligibility (missing info treated as met)]** ann 394 (exclusion) criterion: "B-cell depletion therapy (such as treatment with Rituximab) within 12 months prior to the first dose of study medication." -> gold *not enough information* [], predicted *not excluded* []
+- **[contradiction / wrong polarity]** ann 383 (inclusion) criterion: "Present with active SLE disease with at least one of the following symptoms: i) Arthritis - > 2 joints with pain and signs of inflammation (" -> gold *included* [0, 1], predicted *not included* [0, 1, 2]
+- **[contradiction / wrong polarity]** ann 835 (inclusion) criterion: "Negative allergy skin test (AST)" -> gold *not enough information* [], predicted *not included* [1]
+- **[contradiction / wrong polarity]** ann 691 (inclusion) criterion: "Experiences symptoms of OSA, including snoring and sleepiness" -> gold *included* [0, 2], predicted *not included* [0]
+- **[missed not-applicable]** ann 683 (exclusion) criterion: "Previous tonsillectomy, including partial tonsillectomy" -> gold *not applicable* [], predicted *not excluded* []
+- **[missed not-applicable]** ann 771 (exclusion) criterion: "Females of childbearing potential (ie, have reached menarche)" -> gold *not applicable* [0], predicted *not excluded* []
+- **[missed not-applicable]** ann 751 (exclusion) criterion: "breast-feeding" -> gold *not applicable* [], predicted *not excluded* []
+- **[over-abstention (info present)]** ann 187 (inclusion) criterion: "A respiratory rate of at least 20/min or a PaCO2 of 32mmHg or lower or the use of mechanical ventilation;" -> gold *included* [2], predicted *not enough information* [2]
+- **[over-abstention (info present)]** ann 425 (exclusion) criterion: "APACHE II (health) score > 25" -> gold *not excluded* [], predicted *not enough information* []
+- **[over-abstention (info present)]** ann 185 (inclusion) criterion: "Patients were included if they were diagnosed with Shock, Acute respiratory distress syndrome (ARDS), or both." -> gold *included* [2, 3], predicted *not enough information* [0, 1, 2]
+- **[unsupported eligibility (missing info treated as met)]** ann 391 (exclusion) criterion: "Intravenous corticosteroids within 3 months prior to the first dose of study medication." -> gold *not enough information* [], predicted *not excluded* []
+- **[unsupported eligibility (missing info treated as met)]** ann 315 (exclusion) criterion: "BMI> 40 kg/m2." -> gold *not enough information* [], predicted *not excluded* []
+- **[unsupported eligibility (missing info treated as met)]** ann 412 (exclusion) criterion: "Vaccination within 4 weeks prior to the first dose of study medication." -> gold *not enough information* [], predicted *not excluded* []

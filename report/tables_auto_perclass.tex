@@ -1,20 +1,20 @@
 \begin{table}[t]
 \centering
-\caption{Per-class precision/recall/F1 of the fine-tuned model on the held-out test split.}
+\caption{Per-class precision/recall/F1 of the final (v2) model on the held-out test split.}
 \label{tab:perclass}
 \footnotesize
 \begin{tabular}{llrrrr}
 \toprule
 Group & Class & P & R & F1 & Support \\
 \midrule
-inclusion & included & 0.800 & 0.889 & 0.842 & 27 \\
-inclusion & not included & 0.000 & 0.000 & 0.000 & 7 \\
-inclusion & not enough information & 0.756 & 0.895 & 0.819 & 38 \\
-inclusion & not applicable & 0.000 & 0.000 & 0.000 & 3 \\
+inclusion & included & 1.000 & 0.667 & 0.800 & 27 \\
+inclusion & not included & 0.250 & 0.286 & 0.267 & 7 \\
+inclusion & not enough information & 0.727 & 0.842 & 0.780 & 38 \\
+inclusion & not applicable & 0.400 & 0.667 & 0.500 & 3 \\
 exclusion & excluded & 0.000 & 0.000 & 0.000 & 0 \\
-exclusion & not excluded & 0.695 & 1.000 & 0.820 & 91 \\
-exclusion & not enough information & 0.000 & 0.000 & 0.000 & 28 \\
-exclusion & not applicable & 0.000 & 0.000 & 0.000 & 12 \\
+exclusion & not excluded & 0.721 & 0.967 & 0.826 & 91 \\
+exclusion & not enough information & 0.600 & 0.107 & 0.182 & 28 \\
+exclusion & not applicable & 0.750 & 0.250 & 0.375 & 12 \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -1,109 +1,1212 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TrialMatch-KV</title>
-<style>
-:root{--bg:#f6f7fb;--card:#fff;--ink:#1c2430;--mut:#667085;--acc:#2455d6;--ok:#157f3b;--bad:#b42318;--warn:#b54708;--line:#e3e7ef}
-*{box-sizing:border-box}body{margin:0;font:15px/1.45 system-ui,Segoe UI,Arial;background:var(--bg);color:var(--ink)}
-header{background:#12203f;color:#fff;padding:14px 24px}header h1{margin:0;font-size:20px}header small{opacity:.8}
-.banner{background:#fff3cd;color:#664d03;border-bottom:1px solid #e0a800;padding:8px 24px;font-weight:600}
-main{max-width:1200px;margin:18px auto;padding:0 16px}
-.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{border:1px solid var(--line);background:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600}
-.tabs button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
-textarea{width:100%;min-height:210px;border:1px solid var(--line);border-radius:8px;padding:8px;font:13px/1.4 Consolas,monospace}
-select,input[type=number]{padding:6px;border:1px solid var(--line);border-radius:6px}
-button.primary{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:9px 18px;font-weight:700;cursor:pointer}
-button.primary:disabled{opacity:.5}button.sec{background:#fff;border:1px solid var(--acc);color:var(--acc);border-radius:8px;padding:8px 14px;font-weight:600;cursor:pointer}
-table{border-collapse:collapse;width:100%;font-size:14px}td,th{border:1px solid var(--line);padding:6px 8px;vertical-align:top;text-align:left}th{background:#eef1f8}
-.pill{display:inline-block;padding:2px 10px;border-radius:99px;font-weight:700;font-size:13px;background:#eef1f8}
-.included,.not_excluded{background:#d1fadf;color:var(--ok)}.excluded,.not_included{background:#fee4e2;color:var(--bad)}.not_enough_information{background:#fef0c7;color:var(--warn)}.not_applicable{background:#e5e7eb;color:#444}
-.ev{background:#f0f5ff;border-left:3px solid var(--acc);padding:4px 8px;margin:3px 0;font-size:13px}
-.err{background:#fee4e2;border:1px solid var(--bad);color:var(--bad);padding:10px;border-radius:8px;margin:8px 0}
-.muted{color:var(--mut);font-size:13px}.hide{display:none}.big{font-size:20px;font-weight:800}
-.bar{height:14px;background:var(--acc);border-radius:3px}
-</style></head><body>
-<header><h1>TrialMatch-KV <small>— evidence-grounded clinical-trial criterion screening with KV-cache, tiled attention &amp; speculative decoding</small></h1></header>
-<div class="banner">⚠ Educational screening prototype — NOT a clinical enrollment decision. Outputs may be wrong and must be reviewed by a clinician.</div>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrialMatch-KV — Clinical Screening &amp; Inference Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Warm Beige & Deep Espresso Palette */
+      --bg-base: #F8F5EE;
+      --bg-subtle: #F3ECE1;
+      --bg-warm-wash: #FAF7F2;
+      --card-bg: #FFFFFF;
+      --card-bg-elevated: #FFFDFC;
+      --card-border: #E8DFD3;
+      --card-border-hover: #D8CDBC;
+      --card-border-strong: #C4B5A0;
+
+      /* Deep rich roast espresso & mocha typography */
+      --text-main: #2A1E17;
+      --text-secondary: #5C4A3E;
+      --text-muted: #8C7869;
+      --text-dim: #A89788;
+
+      /* Brand Espresso & Warm Caramel Accents */
+      --brand-espresso: #2D1F17;
+      --brand-espresso-hover: #453225;
+      --brand-espresso-active: #1C120C;
+      --accent-caramel: #8C532B;
+      --accent-caramel-hover: #A06236;
+      --accent-caramel-light: #F7EFE8;
+      --accent-caramel-border: #E8D3C1;
+
+      /* Warm Decision Badges */
+      --ok-bg: #EBF4EC;
+      --ok-border: #BBDCBF;
+      --ok-text: #1B5E26;
+      --bad-bg: #FBECE8;
+      --bad-border: #F1C3B8;
+      --bad-text: #9B2824;
+      --warn-bg: #FEF5E7;
+      --warn-border: #F5DEAA;
+      --warn-text: #915509;
+      --neutral-bg: #F0ECE4;
+      --neutral-border: #DDD4C6;
+      --neutral-text: #5C4E41;
+
+      /* Focus & Shadows */
+      --focus-ring: 0 0 0 3px rgba(140, 83, 43, 0.18);
+      --shadow-sm: 0 1px 2px rgba(42, 30, 23, 0.04);
+      --shadow-card: 0 4px 20px -3px rgba(42, 30, 23, 0.05), 0 2px 6px -1px rgba(42, 30, 23, 0.03);
+      --shadow-lg: 0 12px 32px -4px rgba(42, 30, 23, 0.08), 0 4px 12px -2px rgba(42, 30, 23, 0.04);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+    }
+
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.55;
+      background: var(--bg-base);
+      background-image: 
+        radial-gradient(ellipse at 15% 0%, rgba(235, 224, 208, 0.5) 0%, transparent 60%),
+        radial-gradient(ellipse at 85% 100%, rgba(230, 217, 198, 0.4) 0%, transparent 55%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-subtle); }
+    ::-webkit-scrollbar-thumb { background: #D5C8B7; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #B9A893; }
+
+    /* Top Navigation Header */
+    header {
+      background: rgba(255, 253, 250, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #4A3324 0%, #2A1D16 100%);
+      color: #FAF5EE;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(42, 30, 23, 0.2);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-kv {
+      background: var(--accent-caramel-light);
+      color: var(--accent-caramel);
+      border: 1px solid var(--accent-caramel-border);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0 0;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-status-wrap {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Banner Notice */
+    .banner-container {
+      max-width: 1240px;
+      margin: 16px auto 0 auto;
+      padding: 0 24px;
+    }
+
+    .banner {
+      background: #FCF8F0;
+      border: 1px solid #EEDBBE;
+      border-left: 4px solid #C07718;
+      color: #6C470E;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .banner-badge {
+      background: #F4E3C5;
+      color: #6C470E;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1240px;
+      margin: 18px auto 40px auto;
+      padding: 0 24px;
+    }
+
+    /* Status Bar Card */
+    #status {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 11px 18px;
+      margin-bottom: 16px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #15803D;
+      box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2);
+      flex-shrink: 0;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(21, 128, 61, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
+    }
+
+    /* Tab Navigation */
+    .tabs-wrapper {
+      margin-bottom: 18px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--card-border);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      gap: 4px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .tabs button {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      padding: 8px 18px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: all 0.16s ease;
+      white-space: nowrap;
+    }
+
+    .tabs button:hover:not(.on) {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .tabs button.on {
+      background: var(--brand-espresso);
+      color: #FAF6EF;
+      box-shadow: 0 2px 8px rgba(45, 31, 23, 0.22);
+    }
+
+    /* Card Styling */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
+      transition: border-color 0.15s ease;
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .card-title-icon {
+      color: var(--accent-caramel);
+    }
+
+    /* Two Column Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: 1fr; }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* Textareas and Inputs */
+    textarea {
+      width: 100%;
+      min-height: 230px;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      background: var(--bg-warm-wash);
+      color: var(--text-main);
+      resize: vertical;
+      transition: all 0.15s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      background: #FFFFFF;
+      border-color: var(--accent-caramel);
+      box-shadow: var(--focus-ring);
+    }
+
+    select, input[type=number] {
+      background: #FFFFFF;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    select:focus, input[type=number]:focus {
+      border-color: var(--accent-caramel);
+      box-shadow: var(--focus-ring);
+    }
+
+    /* Buttons */
+    button.primary {
+      background: linear-gradient(180deg, #3A271C 0%, #291C14 100%);
+      color: #FAF5EE;
+      border: 1px solid #1F140E;
+      border-radius: var(--radius-sm);
+      padding: 9px 20px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(41, 28, 20, 0.22);
+      transition: all 0.15s ease;
+    }
+
+    button.primary:hover:not(:disabled) {
+      background: linear-gradient(180deg, #4A3325 0%, #36251B 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(41, 28, 20, 0.28);
+    }
+
+    button.primary:active:not(:disabled) {
+      transform: translateY(0);
+      background: #231710;
+    }
+
+    button.primary:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.sec {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border-strong);
+      color: var(--text-main);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    button.sec:hover {
+      background: var(--bg-subtle);
+      border-color: var(--text-secondary);
+      color: var(--brand-espresso);
+    }
+
+    /* Sample Selector Bar */
+    .sample-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sample-bar select {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    /* Screening Run Controls */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .controls-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .controls-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Outcome Hero Card */
+    .outcome-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF6F0 100%);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .big {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-size: 27px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .rule-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .prov-badge {
+      display: inline-block;
+      background: var(--bg-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-family: 'JetBrains Mono', Consolas, monospace;
+    }
+
+    .action-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 13.5px;
+      text-align: left;
+    }
+
+    th {
+      background: #F5EFE5;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--card-border);
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--card-border);
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      vertical-align: top;
+      color: var(--text-main);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #FDFCFA;
+    }
+
+    /* Decision Pills */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 11px;
+      border-radius: var(--radius-full);
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.2px;
+      line-height: 1.4;
+      border: 1px solid transparent;
+    }
+
+    .included, .not_excluded {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border-color: var(--ok-border);
+    }
+
+    .excluded, .not_included {
+      background: var(--bad-bg);
+      color: var(--bad-text);
+      border-color: var(--bad-border);
+    }
+
+    .not_enough_information {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border-color: var(--warn-border);
+    }
+
+    .not_applicable {
+      background: var(--neutral-bg);
+      color: var(--neutral-text);
+      border-color: var(--neutral-border);
+    }
+
+    /* Evidence Block */
+    .ev {
+      background: #FAF7F2;
+      border: 1px solid #EFE6D9;
+      border-left: 3px solid var(--accent-caramel);
+      border-radius: 6px;
+      padding: 6px 10px;
+      margin: 4px 0;
+      font-size: 12.5px;
+      line-height: 1.45;
+      color: var(--text-main);
+    }
+
+    .ev b {
+      color: var(--accent-caramel);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      margin-right: 4px;
+    }
+
+    /* Error & Notice */
+    .err {
+      background: var(--bad-bg);
+      border: 1px solid var(--bad-border);
+      color: var(--bad-text);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin: 10px 0;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+
+    /* Muted text & Helpers */
+    .muted {
+      color: var(--text-muted);
+      font-size: 12.5px;
+    }
+
+    .hide { display: none !important; }
+
+    /* Benchmark Bars */
+    .benchmark-bar-row {
+      margin-bottom: 10px;
+    }
+
+    .benchmark-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .benchmark-track {
+      width: 100%;
+      height: 22px;
+      background: var(--bg-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+    }
+
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, #7A4927 0%, #B8733E 100%);
+      border-radius: 5px;
+      transition: width 0.4s ease-out;
+    }
+
+    /* Micro Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(140, 83, 43, 0.25);
+      border-top-color: var(--accent-caramel);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .tag-type {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      padding: 2px 7px;
+      border-radius: 4px;
+      border: 1px solid var(--card-border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand-group">
+      <div class="brand-icon">TM</div>
+      <div class="brand-text">
+        <h1>TrialMatch <span class="badge-kv">KV-CACHE &amp; SPECULATIVE</span></h1>
+        <p class="brand-subtitle">Evidence-grounded clinical-trial criterion screening with custom inference engines</p>
+      </div>
+    </div>
+    <div class="header-status-wrap">
+      <div id="status">
+        <span class="status-dot"></span> Checking model status…
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="banner-container">
+  <div class="banner">
+    <span class="banner-badge">Educational Prototype</span>
+    <span><b>Notice:</b> This tool is an academic screening prototype and <u>not</u> a clinical enrollment decision. All predictions and citations must be verified by a clinician.</span>
+  </div>
+</div>
+
 <main>
-<div class="card muted" id="status">Checking model status…</div>
-<div class="tabs"><button class="on" data-t="screen">Screening</button><button data-t="bench">Inference comparison</button><button data-t="attn">Attention lab</button><button data-t="res">Saved experiments</button></div>
+  <div class="tabs-wrapper">
+    <div class="tabs">
+      <button class="on" data-t="screen">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Screening
+      </button>
+      <button data-t="bench">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Inference Comparison
+      </button>
+      <button data-t="attn">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        Attention Lab
+      </button>
+      <button data-t="res">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        Saved Experiments
+      </button>
+    </div>
+  </div>
 
-<section id="t-screen">
- <div class="card"><b>Load a sample (validation-split patients):</b> <select id="sample"></select> <button class="sec" id="loadS">Load</button>
-  <button class="sec" id="clearB">Clear</button></div>
- <div class="grid">
-  <div class="card"><b>1. Patient record</b><div class="muted">Paste a clinical note. Numbered lines ("0. ...") are kept; otherwise it is split into sentences and numbered from 0.</div><textarea id="note" placeholder="Paste patient description here"></textarea></div>
-  <div class="card"><b>2. Trial eligibility criteria</b><div class="muted">One criterion per line under "Inclusion criteria:" / "Exclusion criteria:" headers.</div><textarea id="crit" placeholder="Inclusion criteria:&#10;- ...&#10;Exclusion criteria:&#10;- ..."></textarea></div>
- </div>
- <div class="card">Decoding mode: <select id="mode"><option value="kv">KV cache (custom)</option><option value="speculative">Speculative decoding (custom)</option><option value="nocache">No cache (reference)</option></select>
-  &nbsp;draft tokens k: <input type="number" id="k" value="4" min="1" max="8" style="width:60px"> &nbsp;<button class="primary" id="run">Run screening</button>
-  <span id="spin" class="muted hide"> running…</span><div id="err"></div></div>
- <div id="out" class="hide">
-  <div class="card"><div class="big" id="overall"></div><div class="muted" id="rule"></div><div class="muted" id="prov"></div>
-   <p><button class="sec" id="dlH">Download report (HTML)</button> <button class="sec" id="dlJ">Download JSON</button></p></div>
-  <div class="card"><table id="rtab"><thead><tr><th>#</th><th>Type</th><th>Criterion</th><th>Decision</th><th>Exact supporting evidence</th><th>Explanation</th><th>ms</th></tr></thead><tbody></tbody></table></div>
- </div>
-</section>
+  <!-- Tab 1: Screening -->
+  <section id="t-screen">
+    <div class="card">
+      <div class="card-header-bar">
+        <div class="card-title">
+          <svg class="card-title-icon" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          Load Validation Sample
+        </div>
+        <button class="sec" id="clearB" style="padding: 5px 12px; font-size: 12.5px;">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          Clear Inputs
+        </button>
+      </div>
+      <div class="sample-bar">
+        <select id="sample" aria-label="Select demo validation patient"></select>
+        <button class="sec" id="loadS">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Load Patient Note &amp; Criteria
+        </button>
+      </div>
+    </div>
 
-<section id="t-bench" class="hide">
- <div class="card">Runs the three hand-written decoders on the first criterion of the current Screening inputs (warm-up + timed). Greedy outputs must be identical.<br><br>
- k: <input type="number" id="bk" value="4" min="1" max="8" style="width:60px"> <button class="primary" id="runB">Run live comparison</button><span id="spinB" class="muted hide"> running…</span><div id="errB"></div></div>
- <div class="card hide" id="bout"><div id="bmeta" class="muted"></div><table id="btab"><thead><tr><th>Method</th><th>Prefill ms</th><th>Decode ms</th><th>Total ms</th><th>tok/s</th><th>Peak MB</th><th>Accept. rate</th><th>Tokens = reference</th></tr></thead><tbody></tbody></table><div id="bars"></div></div>
-</section>
+    <div class="grid">
+      <div class="card">
+        <div class="card-header-bar">
+          <div class="card-title">1. Patient Clinical Record</div>
+        </div>
+        <div class="muted" style="margin-bottom: 10px;">Paste medical note. Numbered lines ("0. ...") are kept; otherwise auto-split into numbered sentences.</div>
+        <textarea id="note" placeholder="Paste patient description or clinical note here..."></textarea>
+      </div>
 
-<section id="t-attn" class="hide">
- <div class="card">Compare reference attention, tiled online-softmax attention and PyTorch's fused SDPA on random tensors (8 heads, d=64).<br><br>
- T: <input type="number" id="aT" value="512" style="width:80px"> block: <input type="number" id="aB" value="64" style="width:70px"> causal <input type="checkbox" id="aC" checked>
- <button class="primary" id="runA">Run</button><div id="errA"></div><table id="atab" class="hide"><thead><tr><th>Implementation</th><th>Time ms</th><th>Max |error| vs reference</th></tr></thead><tbody></tbody></table></div>
-</section>
+      <div class="card">
+        <div class="card-header-bar">
+          <div class="card-title">2. Trial Eligibility Criteria</div>
+        </div>
+        <div class="muted" style="margin-bottom: 10px;">One criterion per line grouped under "Inclusion criteria:" and "Exclusion criteria:" headers.</div>
+        <textarea id="crit" placeholder="Inclusion criteria:&#10;- Age >= 18&#10;- Confirmed diagnosis&#10;&#10;Exclusion criteria:&#10;- Active infection&#10;- Prior history of hypersensitivity"></textarea>
+      </div>
+    </div>
 
-<section id="t-res" class="hide"><div class="card" id="resbox">Loading…</div></section>
+    <div class="card">
+      <div class="controls-row">
+        <div class="controls-inputs">
+          <span><b>Decoding Engine:</b></span>
+          <select id="mode">
+            <option value="kv">KV cache (custom hand-written)</option>
+            <option value="speculative">Speculative decoding (custom hand-written)</option>
+            <option value="nocache">No cache (reference hand-written)</option>
+          </select>
+          <span style="margin-left: 8px;"><b>Draft $k$:</b></span>
+          <input type="number" id="k" value="4" min="1" max="8" style="width:65px">
+        </div>
+        <div class="controls-actions">
+          <button class="primary" id="run">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Run Screening
+          </button>
+          <span id="spin" class="muted hide"><span class="spinner"></span> Screen in progress…</span>
+        </div>
+      </div>
+      <div id="err"></div>
+    </div>
+
+    <div id="out" class="hide">
+      <div class="outcome-card">
+        <div class="big" id="overall"></div>
+        <div class="rule-text" id="rule"></div>
+        <div class="prov-badge" id="prov"></div>
+        <div class="action-group">
+          <button class="sec" id="dlH">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Download Report (HTML)
+          </button>
+          <button class="sec" id="dlJ">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download JSON
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="padding: 16px 20px 12px 20px; border-bottom: 1px solid var(--card-border); background: #FAF7F2;">
+          <h3 style="margin: 0; font-size: 15px; color: var(--text-main);">Criterion-Level Evaluations &amp; Evidence Grounding</h3>
+        </div>
+        <div class="table-container" style="border: none; border-radius: 0;">
+          <table id="rtab">
+            <thead>
+              <tr>
+                <th style="width: 38px;">#</th>
+                <th style="width: 105px;">Type</th>
+                <th style="width: 25%;">Criterion</th>
+                <th style="width: 180px;">Decision</th>
+                <th>Exact Supporting Evidence</th>
+                <th style="width: 25%;">Explanation</th>
+                <th style="width: 65px; text-align: right;">Time</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tab 2: Inference Comparison -->
+  <section id="t-bench" class="hide">
+    <div class="card">
+      <div class="card-header-bar">
+        <div class="card-title">Live Decoder Benchmark</div>
+      </div>
+      <p style="margin-top: 0; color: var(--text-secondary);">
+        Executes all three hand-written decoders on the first criterion of the current Screening inputs (warm-up + timed execution). Greedy outputs must be token-identical.
+      </p>
+      <div style="display: flex; align-items: center; gap: 12px; margin-top: 14px;">
+        <span><b>Speculative draft tokens $k$:</b></span>
+        <input type="number" id="bk" value="4" min="1" max="8" style="width:65px">
+        <button class="primary" id="runB">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          Run Live Comparison
+        </button>
+        <span id="spinB" class="muted hide"><span class="spinner"></span> Benchmarking in progress…</span>
+      </div>
+      <div id="errB"></div>
+    </div>
+
+    <div class="card hide" id="bout">
+      <div id="bmeta" class="muted" style="margin-bottom: 14px; font-family: 'JetBrains Mono', monospace; font-size: 12px; background: var(--bg-subtle); padding: 8px 12px; border-radius: 6px;"></div>
+      <div class="table-container" style="margin-bottom: 20px;">
+        <table id="btab">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Prefill</th>
+              <th>Decode</th>
+              <th>Total</th>
+              <th>Throughput</th>
+              <th>Peak VRAM</th>
+              <th>Draft Acceptance</th>
+              <th>Token Equivalence</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <h4 style="margin: 0 0 10px 0; font-size: 13.5px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Throughput Comparison (tokens / sec)</h4>
+      <div id="bars"></div>
+    </div>
+  </section>
+
+  <!-- Tab 3: Attention Lab -->
+  <section id="t-attn" class="hide">
+    <div class="card">
+      <div class="card-header-bar">
+        <div class="card-title">Custom Tiled Attention Benchmark</div>
+      </div>
+      <p style="margin-top: 0; color: var(--text-secondary);">
+        Compare standard PyTorch reference attention, hand-written <b>Tiled Online-Softmax Attention</b> (FlashAttention style with running row max and exponential sum scaling), and PyTorch's fused SDPA backend on random tensors with 8 heads and head dimension $d=64$.
+      </p>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin: 16px 0;">
+        <label><b>Sequence Length $T$:</b> <input type="number" id="aT" value="512" style="width:85px"></label>
+        <label><b>Block Size $B$:</b> <input type="number" id="aB" value="64" style="width:75px"></label>
+        <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox" id="aC" checked style="accent-color: var(--accent-caramel);">
+          <b>Causal Mask</b>
+        </label>
+        <button class="primary" id="runA">
+          <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/></svg>
+          Run Attention Benchmark
+        </button>
+      </div>
+      <div id="errA"></div>
+      <div class="table-container hide" id="atab" style="margin-top: 14px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Implementation</th>
+              <th>Execution Time (ms)</th>
+              <th>Max Absolute Error vs Reference</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tab 4: Saved Experiments -->
+  <section id="t-res" class="hide">
+    <div class="card" id="resbox">
+      <span class="spinner"></span> Loading experiment records from results/…
+    </div>
+  </section>
 </main>
+
 <script>
-const $=s=>document.querySelector(s);let last=null;
-const cls=l=>l.replace(/ /g,'_');
-const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-async function api(p,body){const r=await fetch(p,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});
- let j;try{j=await r.json()}catch{j={}};if(!r.ok)throw new Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||'Request failed'));return j}
-document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
- ['screen','bench','attn','res'].forEach(t=>$('#t-'+t).classList.toggle('hide',t!==b.dataset.t));if(b.dataset.t==='res')loadRes()});
-let samples=[];
-async function init(){await (async()=>{try{samples=await api('/api/samples');$('#sample').innerHTML=samples.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join('')}catch(e){}})();
- try{const s=await api('/api/status');$('#status').innerHTML=s.error?`<span style="color:#b42318">Model error: ${esc(s.error)}</span>`:
-  (s.ready?`✅ Ready — target <b>${esc(s.target)}</b> + LoRA adapter <b>${esc(s.adapter||'none (base model)')}</b>, draft <b>${esc(s.draft)}</b>, device ${esc(s.gpu)}`:'⏳ Loading models… (refresh in a moment)');
-  if(!s.ready&&!s.error)setTimeout(init,3000)}catch(e){$('#status').textContent='Server unreachable'}
- try{samples=await api('/api/samples');$('#sample').innerHTML=samples.map((s,i)=>`<option value="${i}">${esc(s.name)}</option>`).join('')}catch(e){}}
-$('#loadS').onclick=()=>{const s=samples[$('#sample').value];if(s){$('#note').value=s.note;$('#crit').value=s.criteria}};
-$('#clearB').onclick=()=>{$('#note').value='';$('#crit').value='';$('#out').classList.add('hide');$('#err').innerHTML=''};
-const payload=()=>({note:$('#note').value,criteria:$('#crit').value,mode:$('#mode').value,k:+$('#k').value});
-$('#run').onclick=async()=>{$('#err').innerHTML='';$('#run').disabled=true;$('#spin').classList.remove('hide');
- try{const d=await api('/api/screen',payload());last=d;render(d)}catch(e){$('#err').innerHTML=`<div class="err">${esc(e.message)}</div>`}
- $('#run').disabled=false;$('#spin').classList.add('hide')};
-function render(d){$('#out').classList.remove('hide');$('#overall').textContent='Preliminary outcome: '+d.overall;$('#rule').textContent=d.overall_rule+' (rule-based aggregation of criterion-level predictions)';
- $('#prov').textContent=`Model ${d.model} | adapter ${d.adapter} | mode ${d.mode}${d.draft?' (draft '+d.draft+', k='+d.k+')':''} | ${d.generated} | ${d.wall_s.toFixed(1)} s`;
- $('#rtab tbody').innerHTML=d.results.map((r,i)=>`<tr><td>${i+1}</td><td>${r.criterion_type}</td><td>${esc(r.criterion)}</td>
-  <td><span class="pill ${cls(r.label)}">${esc(r.label)}</span>${r.missing_information?'<div class="muted">⚠ missing information</div>':''}${r.format_valid?'':'<div class="muted">⚠ malformed output → fallback</div>'}</td>
-  <td>${r.evidence.length?r.evidence.map(e=>`<div class="ev"><b>[${e.id}]</b> ${esc(e.text)}</div>`).join(''):'<i class="muted">no sentence cited</i>'}</td>
-  <td>${esc(r.explanation)}</td><td>${(1000*r.timing.total_s).toFixed(0)}</td></tr>`).join('')}
-function dl(name,type,txt){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()}
-$('#dlH').onclick=async()=>{if(!last)return;const r=await fetch('/api/report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(last)});dl('eligibility_report.html','text/html',await r.text())};
-$('#dlJ').onclick=()=>last&&dl('eligibility_report.json','application/json',JSON.stringify(last,null,2));
-$('#runB').onclick=async()=>{$('#errB').innerHTML='';$('#spinB').classList.remove('hide');$('#runB').disabled=true;
- try{const d=await api('/api/benchmark',{...payload(),k:+$('#bk').value});$('#bout').classList.remove('hide');
-  $('#bmeta').textContent=`Prompt tokens: ${d.prompt_tokens} | criterion: ${d.criterion} | output: ${d.output}`;
-  const mx=Math.max(...d.rows.map(r=>r.tok_per_s));
-  $('#btab tbody').innerHTML=d.rows.map(r=>`<tr><td>${esc(r.method)}</td><td>${r.prefill_ms.toFixed(0)}</td><td>${r.decode_ms.toFixed(0)}</td><td>${r.total_ms.toFixed(0)}</td><td>${r.tok_per_s.toFixed(1)}</td><td>${r.peak_MB.toFixed(0)}</td><td>${r.acceptance_rate==null?'–':r.acceptance_rate.toFixed(2)}</td><td>${r.tokens_equal_to_reference?'✅ yes':'❌ no'}</td></tr>`).join('');
-  $('#bars').innerHTML='<p class="muted">Throughput (tokens/s)</p>'+d.rows.map(r=>`<div>${esc(r.method)}<div class="bar" style="width:${100*r.tok_per_s/mx}%"></div></div>`).join('')}
- catch(e){$('#errB').innerHTML=`<div class="err">${esc(e.message)}</div>`}$('#spinB').classList.add('hide');$('#runB').disabled=false};
-$('#runA').onclick=async()=>{$('#errA').innerHTML='';try{const d=await api('/api/attention',{T:+$('#aT').value,block:+$('#aB').value,causal:$('#aC').checked});
- $('#atab').classList.remove('hide');$('#atab tbody').innerHTML=Object.entries(d).map(([k,v])=>`<tr><td>${k}</td><td>${v.ms.toFixed(2)}</td><td>${v.max_abs_err_vs_reference.toExponential(2)}</td></tr>`).join('')}
- catch(e){$('#errA').innerHTML=`<div class="err">${esc(e.message)}</div>`}};
-async function loadRes(){try{const d=await api('/api/results');let h='';
- const t=d['metrics_test_finetuned.json'],b=d['metrics_test_base.json'];
- if(t){h+='<h3>Held-out test (fine-tuned vs base)</h3><table><tr><th>Model</th><th>Accuracy</th><th>Macro-F1</th><th>Evidence micro-F1</th></tr>'+
-  [['Base (zero-shot)',b],['Fine-tuned',t]].filter(x=>x[1]).map(([n,m])=>`<tr><td>${n}</td><td>${m.overall.accuracy.toFixed(3)}</td><td>${m.overall.macro_f1.toFixed(3)}</td><td>${m.overall.evidence.micro.f1.toFixed(3)}</td></tr>`).join('')+'</table>'}
- const bm=d['decoding_benchmark.json'];if(bm){h+='<h3>KV-cache benchmark (offline run)</h3><table><tr><th>in</th><th>out</th><th>match</th><th>no-cache s</th><th>KV s</th><th>speedup</th></tr>'+bm.cache_tests.map(r=>`<tr><td>${r.input_len}</td><td>${r.output_len}</td><td>${r.tokens_match?'✅':'❌'}</td><td>${r.nocache.total_s.toFixed(2)}</td><td>${r.kv.total_s.toFixed(2)}</td><td>${r.speedup_total.toFixed(1)}x</td></tr>`).join('')+'</table>'}
- $('#resbox').innerHTML=h||'No saved experiment files found in results/.'}catch(e){$('#resbox').textContent=e.message}}
-init().then(()=>{if(location.hash==='#demo'){setTimeout(()=>{$('#loadS').click();$('#run').click()},500)}if(location.hash==='#bench'){setTimeout(()=>{$('#loadS').click();document.querySelector('[data-t=bench]').click();$('#runB').click()},500)}});
-</script></body></html>
+const $ = s => document.querySelector(s);
+let last = null;
+const cls = l => l.replace(/ /g, '_');
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+async function api(p, body) {
+  const r = await fetch(p, body ? {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(body)
+  } : {});
+  let j;
+  try { j = await r.json(); } catch { j = {}; }
+  if (!r.ok) throw new Error(typeof j.detail === 'string' ? j.detail : JSON.stringify(j.detail || 'Request failed'));
+  return j;
+}
+
+// Tab navigation
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  ['screen', 'bench', 'attn', 'res'].forEach(t => $('#t-' + t).classList.toggle('hide', t !== b.dataset.t));
+  if (b.dataset.t === 'res') loadRes();
+});
+
+let samples = [];
+
+async function init() {
+  try {
+    const s = await api('/api/status');
+    if (s.error) {
+      $('#status').innerHTML = `<span style="color:#b42318; font-weight:600;">⚠ Model error: ${esc(s.error)}</span>`;
+    } else if (s.ready) {
+      $('#status').innerHTML = `<span class="status-dot"></span> Ready &mdash; Target: <b>${esc(s.target)}</b> | Adapter: <b>${esc(s.adapter || 'none (base model)')}</b> | Draft: <b>${esc(s.draft)}</b> | Device: <b>${esc(s.gpu)}</b>`;
+    } else {
+      $('#status').innerHTML = `<span class="spinner"></span> Loading models… (will refresh automatically)`;
+      setTimeout(init, 3000);
+    }
+  } catch (e) {
+    $('#status').innerHTML = `<span style="color:#b42318;">Server unreachable or still starting</span>`;
+  }
+
+  try {
+    samples = await api('/api/samples');
+    $('#sample').innerHTML = samples.map((s, i) => `<option value="${i}">${esc(s.name)}</option>`).join('');
+  } catch (e) {}
+}
+
+$('#loadS').onclick = () => {
+  const s = samples[$('#sample').value];
+  if (s) {
+    $('#note').value = s.note;
+    $('#crit').value = s.criteria;
+  }
+};
+
+$('#clearB').onclick = () => {
+  $('#note').value = '';
+  $('#crit').value = '';
+  $('#out').classList.add('hide');
+  $('#err').innerHTML = '';
+};
+
+const payload = () => ({
+  note: $('#note').value,
+  criteria: $('#crit').value,
+  mode: $('#mode').value,
+  k: +$('#k').value
+});
+
+$('#run').onclick = async () => {
+  $('#err').innerHTML = '';
+  $('#run').disabled = true;
+  $('#spin').classList.remove('hide');
+  try {
+    const d = await api('/api/screen', payload());
+    last = d;
+    render(d);
+  } catch (e) {
+    $('#err').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+  $('#run').disabled = false;
+  $('#spin').classList.add('hide');
+};
+
+function render(d) {
+  $('#out').classList.remove('hide');
+  
+  let outcomeBadgeColor = 'var(--text-main)';
+  if (d.overall.includes('eligible') && !d.overall.includes('ineligible')) {
+    outcomeBadgeColor = 'var(--ok-text)';
+  } else if (d.overall.includes('ineligible')) {
+    outcomeBadgeColor = 'var(--bad-text)';
+  } else if (d.overall.includes('information')) {
+    outcomeBadgeColor = 'var(--warn-text)';
+  }
+
+  $('#overall').innerHTML = `<span style="color: ${outcomeBadgeColor};">${esc(d.overall)}</span>`;
+  $('#rule').innerHTML = `<b>Rule:</b> ${esc(d.overall_rule)} <span class="muted">(deterministic clinical aggregation rule)</span>`;
+  $('#prov').innerHTML = `Model: <b>${esc(d.model)}</b> | Adapter: <b>${esc(d.adapter || 'base')}</b> | Mode: <b>${esc(d.mode)}</b>${d.draft ? ` (draft ${esc(d.draft)}, k=${d.k})` : ''} | Generated: ${esc(d.generated)} | Latency: <b>${d.wall_s.toFixed(2)}s</b>`;
+
+  $('#rtab tbody').innerHTML = d.results.map((r, i) => `<tr>
+    <td style="font-weight:700; color:var(--text-muted); font-size:12px;">${i + 1}</td>
+    <td><span class="tag-type">${esc(r.criterion_type)}</span></td>
+    <td style="font-weight:500;">${esc(r.criterion)}</td>
+    <td>
+      <span class="pill ${cls(r.label)}">${esc(r.label)}</span>
+      ${r.missing_information ? '<div class="muted" style="color:var(--warn-text); margin-top:4px;">⚠ missing information</div>' : ''}
+      ${r.format_valid ? '' : '<div class="muted" style="color:var(--bad-text); margin-top:4px;">⚠ malformed output → fallback</div>'}
+    </td>
+    <td>
+      ${r.evidence.length ? r.evidence.map(e => `<div class="ev"><b>[${e.id}]</b> ${esc(e.text)}</div>`).join('') : '<i class="muted">No sentence cited</i>'}
+    </td>
+    <td style="color:var(--text-secondary); font-size:13px;">${esc(r.explanation)}</td>
+    <td style="text-align: right; font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-muted);">${(1000 * r.timing.total_s).toFixed(0)}ms</td>
+  </tr>`).join('');
+
+  $('#out').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function dl(name, type, txt) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([txt], { type }));
+  a.download = name;
+  a.click();
+}
+
+$('#dlH').onclick = async () => {
+  if (!last) return;
+  const r = await fetch('/api/report', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(last)
+  });
+  dl('eligibility_report.html', 'text/html', await r.text());
+};
+
+$('#dlJ').onclick = () => last && dl('eligibility_report.json', 'application/json', JSON.stringify(last, null, 2));
+
+$('#runB').onclick = async () => {
+  $('#errB').innerHTML = '';
+  $('#spinB').classList.remove('hide');
+  $('#runB').disabled = true;
+  try {
+    const d = await api('/api/benchmark', { ...payload(), k: +$('#bk').value });
+    $('#bout').classList.remove('hide');
+    $('#bmeta').innerHTML = `<b>Prompt Tokens:</b> ${d.prompt_tokens} &nbsp;|&nbsp; <b>Criterion:</b> ${esc(d.criterion)} &nbsp;|&nbsp; <b>Greedy Output:</b> <span style="color:var(--brand-espresso);">${esc(d.output)}</span>`;
+    
+    const mx = Math.max(...d.rows.map(r => r.tok_per_s));
+    
+    $('#btab tbody').innerHTML = d.rows.map(r => `<tr>
+      <td style="font-weight:700;">${esc(r.method)}</td>
+      <td>${r.prefill_ms.toFixed(0)} ms</td>
+      <td>${r.decode_ms.toFixed(0)} ms</td>
+      <td style="font-weight:600;">${r.total_ms.toFixed(0)} ms</td>
+      <td style="color:var(--accent-caramel); font-weight:700;">${r.tok_per_s.toFixed(1)} tok/s</td>
+      <td>${r.peak_MB.toFixed(0)} MB</td>
+      <td>${r.acceptance_rate == null ? '&mdash;' : (r.acceptance_rate * 100).toFixed(1) + '%'}</td>
+      <td>${r.tokens_equal_to_reference ? '<span style="color:var(--ok-text); font-weight:700;">✅ Token match</span>' : '<span style="color:var(--bad-text); font-weight:700;">❌ Discrepancy</span>'}</td>
+    </tr>`).join('');
+
+    $('#bars').innerHTML = d.rows.map(r => `
+      <div class="benchmark-bar-row">
+        <div class="benchmark-bar-label">
+          <span>${esc(r.method)}</span>
+          <span style="font-family:'JetBrains Mono', monospace; color:var(--brand-espresso);">${r.tok_per_s.toFixed(1)} tok/s</span>
+        </div>
+        <div class="benchmark-track">
+          <div class="bar" style="width: ${Math.max(4, (100 * r.tok_per_s) / mx)}%;"></div>
+        </div>
+      </div>
+    `).join('');
+  } catch (e) {
+    $('#errB').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+  $('#spinB').classList.add('hide');
+  $('#runB').disabled = false;
+};
+
+$('#runA').onclick = async () => {
+  $('#errA').innerHTML = '';
+  try {
+    const d = await api('/api/attention', {
+      T: +$('#aT').value,
+      block: +$('#aB').value,
+      causal: $('#aC').checked
+    });
+    $('#atab').classList.remove('hide');
+    $('#atab tbody').innerHTML = Object.entries(d).map(([k, v]) => `<tr>
+      <td style="font-weight:700;">${esc(k)}</td>
+      <td style="font-family:'JetBrains Mono', monospace; font-weight:600;">${v.ms.toFixed(2)} ms</td>
+      <td style="font-family:'JetBrains Mono', monospace; color:var(--text-muted);">${v.max_abs_err_vs_reference.toExponential(2)}</td>
+    </tr>`).join('');
+  } catch (e) {
+    $('#errA').innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  }
+};
+
+async function loadRes() {
+  try {
+    const d = await api('/api/results');
+    let h = '';
+    const t = d['metrics_test_finetuned.json'];
+    const b = d['metrics_test_base.json'];
+
+    if (t) {
+      h += `<h3 style="margin: 0 0 10px 0; font-size: 16px; color: var(--text-main);">Held-Out Test Set Performance (Fine-tuned vs Base)</h3>
+      <div class="table-container" style="margin-bottom: 24px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Model Setup</th>
+              <th>Overall Accuracy</th>
+              <th>Macro-F1</th>
+              <th>Evidence Micro-F1</th>
+            </tr>
+          </thead>
+          <tbody>` +
+          [['Base (Zero-Shot)', b], ['Fine-Tuned Qwen2.5-1.5B (LoRA)', t]]
+            .filter(x => x[1])
+            .map(([n, m]) => `<tr>
+              <td style="font-weight:700;">${n}</td>
+              <td style="font-family:'JetBrains Mono', monospace; font-weight:600;">${m.overall.accuracy.toFixed(3)}</td>
+              <td style="font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--accent-caramel);">${m.overall.macro_f1.toFixed(3)}</td>
+              <td style="font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--ok-text);">${m.overall.evidence.micro.f1.toFixed(3)}</td>
+            </tr>`).join('') +
+          `</tbody>
+        </table>
+      </div>`;
+    }
+
+    const bm = d['decoding_benchmark.json'];
+    if (bm) {
+      h += `<h3 style="margin: 0 0 10px 0; font-size: 16px; color: var(--text-main);">KV-Cache Benchmark Performance (Offline Suite)</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Input Tokens</th>
+              <th>Output Tokens</th>
+              <th>Greedy Match</th>
+              <th>No-Cache (sec)</th>
+              <th>KV-Cache (sec)</th>
+              <th>Speedup</th>
+            </tr>
+          </thead>
+          <tbody>` +
+          bm.cache_tests.map(r => `<tr>
+            <td style="font-family:'JetBrains Mono', monospace;">${r.input_len}</td>
+            <td style="font-family:'JetBrains Mono', monospace;">${r.output_len}</td>
+            <td>${r.tokens_match ? '<span style="color:var(--ok-text); font-weight:700;">✅ Match</span>' : '<span style="color:var(--bad-text); font-weight:700;">❌ Discrepancy</span>'}</td>
+            <td style="font-family:'JetBrains Mono', monospace;">${r.nocache.total_s.toFixed(2)}s</td>
+            <td style="font-family:'JetBrains Mono', monospace; font-weight:600;">${r.kv.total_s.toFixed(2)}s</td>
+            <td style="font-family:'JetBrains Mono', monospace; font-weight:700; color:var(--accent-caramel);">${r.speedup_total.toFixed(1)}x</td>
+          </tr>`).join('') +
+          `</tbody>
+        </table>
+      </div>`;
+    }
+
+    $('#resbox').innerHTML = h || '<div class="muted">No saved experiment files found in results/.</div>';
+  } catch (e) {
+    $('#resbox').textContent = e.message;
+  }
+}
+
+init().then(() => {
+  if (location.hash === '#demo') {
+    setTimeout(() => { $('#loadS').click(); $('#run').click(); }, 500);
+  }
+  if (location.hash === '#bench') {
+    setTimeout(() => {
+      $('#loadS').click();
+      document.querySelector('[data-t=bench]').click();
+      $('#runB').click();
+    }, 500);
+  }
+});
+</script>
+</body>
+</html>

@@ -263,19 +263,31 @@ def report(payload: dict):
     e = html.escape
     rows = ""
     for i, r in enumerate(payload.get("results", []), 1):
-        ev = "".join(f"<li><b>[{x['id']}]</b> {e(x['text'])}</li>" for x in r["evidence"]) or "<li><i>none cited</i></li>"
-        rows += (f"<tr><td>{i}</td><td>{e(r['criterion_type'])}</td><td>{e(r['criterion'])}</td><td><b>{e(r['label'])}</b>"
-                 f"{' (missing information)' if r['missing_information'] else ''}</td><td><ul>{ev}</ul></td><td>{e(r['explanation'])}</td></tr>")
-    return (f"<!doctype html><meta charset=utf-8><title>Eligibility screening report</title><style>body{{font:14px Arial;margin:30px}}"
-            f"table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #999;padding:6px;vertical-align:top}}th{{background:#eee}}"
-            f".warn{{background:#fff3cd;border:1px solid #e0a800;padding:10px}}</style><h1>Clinical-trial eligibility screening report</h1>"
-            f"<p class=warn><b>{e(DISCLAIMER)}</b></p><h2>Preliminary outcome: {e(payload.get('overall',''))}</h2><p>{e(payload.get('overall_rule',''))} "
-            f"(Aggregation by explicit rule; the dataset has criterion-level labels only.)</p>"
-            f"<h3>Provenance</h3><ul><li>Generated: {e(str(payload.get('generated')))}</li><li>Model: {e(str(payload.get('model')))}</li>"
-            f"<li>LoRA adapter: {e(str(payload.get('adapter')))}</li><li>Decoding mode: {e(str(payload.get('mode')))} (greedy)</li>"
-            f"<li>Draft model: {e(str(payload.get('draft')))}</li></ul><h3>Patient note (numbered sentences)</h3><ol start=0>"
-            + "".join(f"<li>{e(s)}</li>" for s in payload.get("sentences", {}).values()) +
-            f"</ol><h3>Criterion-level results</h3><table><tr><th>#</th><th>Type</th><th>Criterion</th><th>Label</th><th>Evidence</th><th>Explanation</th></tr>{rows}</table>")
+        ev = "".join(f"<li style='margin-bottom:4px;'><strong style='color:#8c532b;'>[{x['id']}]</strong> {e(x['text'])}</li>" for x in r["evidence"]) or "<li><i style='color:#8c7869;'>none cited</i></li>"
+        rows += (f"<tr><td style='color:#8c7869;font-weight:600;'>{i}</td><td><span style='background:#f3ece1;padding:2px 7px;border-radius:4px;font-size:11.5px;font-weight:600;color:#5c4a3e;'>{e(r['criterion_type'])}</span></td><td>{e(r['criterion'])}</td><td><b style='color:#2a1e17;'>{e(r['label'])}</b>"
+                 f"{'<div style=\"color:#915509;font-size:12px;margin-top:2px;\">⚠ missing information</div>' if r['missing_information'] else ''}</td><td><ul style='margin:0;padding-left:18px;'>{ev}</ul></td><td style='color:#5c4a3e;font-size:13px;'>{e(r['explanation'])}</td></tr>")
+    return (f"<!doctype html><html lang='en'><head><meta charset='utf-8'><title>Eligibility Screening Report</title>"
+            f"<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>"
+            f"<link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap' rel='stylesheet'>"
+            f"<style>body{{font:14px/1.55 'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;margin:40px auto;max-width:1050px;background:#f8f5ee;color:#2a1e17;padding:0 20px;}}"
+            f".card{{background:#ffffff;border:1px solid #e8dfd3;border-radius:12px;padding:22px;margin-bottom:20px;box-shadow:0 2px 8px rgba(42,30,23,0.04);}}"
+            f"table{{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff;border-radius:8px;overflow:hidden;border:1px solid #e8dfd3;}}"
+            f"th{{background:#f5efe5;color:#5c4a3e;font-weight:700;padding:10px 12px;text-align:left;border-bottom:1px solid #e8dfd3;font-size:12px;text-transform:uppercase;}}"
+            f"td{{padding:11px 12px;border-bottom:1px solid #e8dfd3;vertical-align:top;}}"
+            f"tr:last-child td{{border-bottom:none;}}"
+            f".warn{{background:#fcf8f0;border:1px solid #eedbbe;border-left:4px solid #c07718;padding:12px 16px;border-radius:8px;color:#6c470e;margin-bottom:20px;}}"
+            f"h1,h2,h3{{color:#2a1e17;}} h1{{font-size:24px;margin-top:0;}} h2{{font-size:19px;color:#8c532b;margin-bottom:6px;}}</style></head><body>"
+            f"<div class='card'><h1>Clinical-Trial Eligibility Screening Report</h1>"
+            f"<div class='warn'><b>Notice:</b> {e(DISCLAIMER)}</div>"
+            f"<h2>Preliminary Outcome: {e(payload.get('overall',''))}</h2><p style='color:#5c4a3e;margin-top:0;'>{e(payload.get('overall_rule',''))} "
+            f"(Deterministic rule aggregation; labels are assigned per criterion.)</p>"
+            f"<div style='background:#f9f6f0;border:1px solid #e8dfd3;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#5c4a3e;margin-top:14px;'>"
+            f"<b>Provenance:</b> Generated: {e(str(payload.get('generated')))} &bull; Model: {e(str(payload.get('model')))} &bull; "
+            f"LoRA Adapter: {e(str(payload.get('adapter')))} &bull; Mode: {e(str(payload.get('mode')))} (greedy) &bull; "
+            f"Draft Model: {e(str(payload.get('draft')))}</div></div>"
+            f"<div class='card'><h3>Patient Note (Numbered Sentences)</h3><ol start='0' style='padding-left:20px;line-height:1.6;color:#3d2f25;font-size:13px;'>"
+            + "".join(f"<li style='margin-bottom:4px;'>{e(s)}</li>" for s in payload.get("sentences", {}).values()) +
+            f"</ol></div><div class='card'><h3>Criterion-Level Predictions &amp; Evidence Grounding</h3><table><tr><th style='width:35px;'>#</th><th style='width:95px;'>Type</th><th>Criterion</th><th>Label</th><th>Evidence</th><th>Explanation</th></tr>{rows}</table></div></body></html>")
 
 
 app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")

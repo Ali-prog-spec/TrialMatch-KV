@@ -3,3 +3,4 @@ __pycache__/
 .cache/
 *.aux
 *.log.tmp
+checkpoints/lora_bal*

@@ -1,0 +1,302 @@
+{
+ "overall": {
+  "n": 206,
+  "accuracy": 0.7718446601941747,
+  "macro_f1": 0.5916771129167712,
+  "macro_f1_present_classes": 0.5916771129167712,
+  "per_class": {
+   "included": {
+    "precision": 1.0,
+    "recall": 0.5714285714285714,
+    "f1": 0.7272727272727273,
+    "support": 35
+   },
+   "not included": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "support": 3
+   },
+   "excluded": {
+    "precision": 0.6666666666666666,
+    "recall": 1.0,
+    "f1": 0.8,
+    "support": 2
+   },
+   "not excluded": {
+    "precision": 0.8305084745762712,
+    "recall": 0.9702970297029703,
+    "f1": 0.8949771689497716,
+    "support": 101
+   },
+   "not enough information": {
+    "precision": 0.7083333333333334,
+    "recall": 0.6415094339622641,
+    "f1": 0.6732673267326733,
+    "support": 53
+   },
+   "not applicable": {
+    "precision": 0.5,
+    "recall": 0.4166666666666667,
+    "f1": 0.45454545454545453,
+    "support": 12
+   }
+  },
+  "labels": [
+   "included",
+   "not included",
+   "excluded",
+   "not excluded",
+   "not enough information",
+   "not applicable"
+  ],
+  "confusion_matrix": [
+   [
+    20,
+    6,
+    0,
+    0,
+    8,
+    1
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    3,
+    0
+   ],
+   [
+    0,
+    0,
+    2,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    98,
+    2,
+    1
+   ],
+   [
+    0,
+    1,
+    1,
+    14,
+    34,
+    3
+   ],
+   [
+    0,
+    0,
+    0,
+    6,
+    1,
+    5
+   ]
+  ],
+  "invalid_outputs": 0,
+  "evidence": {
+   "micro": {
+    "precision": 0.4785276073619632,
+    "recall": 0.6782608695652174,
+    "f1": 0.5611510791366907
+   },
+   "macro_all": {
+    "precision": 0.7726132686084144,
+    "recall": 0.8697411003236247,
+    "f1": 0.7089122851258772
+   },
+   "macro_nonempty_gold": {
+    "precision": 0.7906481481481483,
+    "recall": 0.7018518518518518,
+    "f1": 0.6448436748436748
+   },
+   "n": 206,
+   "n_nonempty_gold": 90,
+   "empty_gold_empty_pred_rate": 0.42718446601941745
+  }
+ },
+ "inclusion": {
+  "n": 66,
+  "accuracy": 0.6818181818181818,
+  "macro_f1": 0.3771306818181818,
+  "macro_f1_present_classes": 0.3771306818181818,
+  "per_class": {
+   "included": {
+    "precision": 1.0,
+    "recall": 0.5714285714285714,
+    "f1": 0.7272727272727273,
+    "support": 35
+   },
+   "not included": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "support": 3
+   },
+   "not enough information": {
+    "precision": 0.6756756756756757,
+    "recall": 0.9259259259259259,
+    "f1": 0.78125,
+    "support": 27
+   },
+   "not applicable": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "support": 1
+   }
+  },
+  "labels": [
+   "included",
+   "not included",
+   "not enough information",
+   "not applicable"
+  ],
+  "confusion_matrix": [
+   [
+    20,
+    6,
+    8,
+    1
+   ],
+   [
+    0,
+    0,
+    3,
+    0
+   ],
+   [
+    0,
+    1,
+    25,
+    1
+   ],
+   [
+    0,
+    0,
+    1,
+    0
+   ]
+  ],
+  "invalid_outputs": 0,
+  "evidence": {
+   "micro": {
+    "precision": 0.5760869565217391,
+    "recall": 0.7910447761194029,
+    "f1": 0.6666666666666666
+   },
+   "macro_all": {
+    "precision": 0.7291666666666669,
+    "recall": 0.8699494949494949,
+    "f1": 0.6949888495343042
+   },
+   "macro_nonempty_gold": {
+    "precision": 0.8025,
+    "recall": 0.8283333333333335,
+    "f1": 0.7573852813852815
+   },
+   "n": 66,
+   "n_nonempty_gold": 50,
+   "empty_gold_empty_pred_rate": 0.12121212121212122
+  }
+ },
+ "exclusion": {
+  "n": 140,
+  "accuracy": 0.8142857142857143,
+  "macro_f1": 0.6769448612274855,
+  "macro_f1_present_classes": 0.6769448612274855,
+  "per_class": {
+   "excluded": {
+    "precision": 0.6666666666666666,
+    "recall": 1.0,
+    "f1": 0.8,
+    "support": 2
+   },
+   "not excluded": {
+    "precision": 0.8305084745762712,
+    "recall": 0.9702970297029703,
+    "f1": 0.8949771689497716,
+    "support": 101
+   },
+   "not enough information": {
+    "precision": 0.8181818181818182,
+    "recall": 0.34615384615384615,
+    "f1": 0.4864864864864865,
+    "support": 26
+   },
+   "not applicable": {
+    "precision": 0.625,
+    "recall": 0.45454545454545453,
+    "f1": 0.5263157894736842,
+    "support": 11
+   }
+  },
+  "labels": [
+   "excluded",
+   "not excluded",
+   "not enough information",
+   "not applicable"
+  ],
+  "confusion_matrix": [
+   [
+    2,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    98,
+    2,
+    1
+   ],
+   [
+    1,
+    14,
+    9,
+    2
+   ],
+   [
+    0,
+    6,
+    0,
+    5
+   ]
+  ],
+  "invalid_outputs": 0,
+  "evidence": {
+   "micro": {
+    "precision": 0.352112676056338,
+    "recall": 0.5208333333333334,
+    "f1": 0.42016806722689076
+   },
+   "macro_all": {
+    "precision": 0.7930952380952381,
+    "recall": 0.8696428571428572,
+    "f1": 0.7154761904761905
+   },
+   "macro_nonempty_gold": {
+    "precision": 0.7758333333333333,
+    "recall": 0.54375,
+    "f1": 0.5041666666666667
+   },
+   "n": 140,
+   "n_nonempty_gold": 40,
+   "empty_gold_empty_pred_rate": 0.5714285714285714
+  }
+ },
+ "decoding": {
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "adapter": "checkpoints/lora_bal_ep3",
+  "decoding": "greedy, KV-cache (custom loop)",
+  "max_new_tokens": 64,
+  "dtype": "fp16"
+ }
+}

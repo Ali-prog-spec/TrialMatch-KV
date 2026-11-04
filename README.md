@@ -56,9 +56,10 @@ Claude Code (Anthropic) assisted with code and drafting; all code was tested and
 | | Accuracy | Macro-F1 | Evidence micro-F1 |
 |---|---|---|---|
 | Base Qwen2.5-1.5B (zero-shot) | 0.223 | 0.211 | 0.144 |
-| + LoRA fine-tuning (epoch 1) | 0.723 | 0.379 | 0.495 |
+| v1: LoRA, uniform sampling, loss-selected (`checkpoints/lora_v1`) | 0.723 | 0.379 | 0.495 |
+| **v2 (final): LoRA, class-balanced sampling, epoch 3 selected by validation macro-F1 (`checkpoints/lora_best`)** | 0.718 | **0.486** | **0.543** |
 
-Honest caveat: the fine-tuned model predicts "not excluded" for every exclusion criterion (majority-class collapse); see the report's error analysis (`results/error_analysis.md`).
+v1 predicted "not excluded" for every exclusion criterion (majority-class collapse); v2 reduces this but is still over-confident when information is missing. v2 was designed after v1 was seen on the test split; its sampling scheme and epoch were chosen on validation data only and it was run once on test (see report Sec. V-A). Validation: v1 acc 0.723 / macro-F1 0.349, v2 0.772 / 0.592. Error analysis: `results/error_analysis.md`. Train v2 with `python -m src.train --epochs 4 --balance sqrt --save_every_epoch --out checkpoints/lora_bal --log results/train_log_bal.json`, then evaluate each `checkpoints/lora_bal_ep*` on validation.
 - KV cache: token-identical to the uncached reference in 9/9 length configs, 2.0-8.1x faster (one unexplained 38.7x outlier).
 - Tiled online-softmax attention: max error 8.3e-7 (fp32) vs reference; 85x less extra memory at T=2048 but slower than fused SDPA.
 - Speculative decoding: token-identical to greedy in 12/12 tests (and to HF assisted generation) but 0.49-1.00x speed on RTX 2060.

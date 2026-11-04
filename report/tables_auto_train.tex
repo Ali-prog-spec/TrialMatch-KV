@@ -1,15 +1,16 @@
 \begin{table}[t]
 \centering
-\caption{LoRA training log (best epoch = 1, saved by validation loss).}
+\caption{v2 training log (balanced sampling, 4 epochs). Validation accuracy, macro-F1 and evidence micro-F1 come from generation on the validation split; epoch 3 has the best validation macro-F1 and is the final adapter.}
 \label{tab:train}
 \footnotesize
-\begin{tabular}{lrrr}
+\begin{tabular}{rrrrrrr}
 \toprule
-Epoch & Train loss & Val loss & Elapsed min \\
+Epoch & Train loss & Val loss & Val Acc & Val mF1 & Val Ev-F1 & Min \\
 \midrule
-1 & 0.1616 & 0.1204 & 20 \\
-2 & 0.0751 & 0.1214 & 41 \\
-3 & 0.0450 & 0.1252 & 62 \\
+1 & 0.1613 & 0.1224 & 0.762 & 0.492 & 0.461 & 7 \\
+2 & 0.0707 & 0.1648 & 0.699 & 0.560 & 0.473 & 16 \\
+3 & 0.0417 & 0.1492 & 0.772 & 0.592 & 0.561 & 26 \\
+4 & 0.0253 & 0.1409 & 0.743 & 0.582 & 0.538 & 37 \\
 \bottomrule
 \end{tabular}
 \end{table}
